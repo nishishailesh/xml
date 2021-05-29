@@ -16,30 +16,44 @@ print_node($x);
 
 function print_node($x)
 {
-  
-  if($x->hasChildNodes())
+  if($x->hasChildNodes() || $x->nodeName!='#text')
   {
-    echo '<ul data-toggle="collapse" data-target=".'.$x->nodeName.'" >';
-    //echo '<li class="'.$x->nodeName.' " >'.$x->nodeName.':';
+    echo '<ul>';
+    echo '<li>'.$x->nodeName.':';
     $len=$x->childNodes->length;
     for ($i=0;$i<$len;$i++) 
     {
       print_node($x->childNodes[$i]);
     }
-    //echo '</li>';
+    echo '</li>';
     echo '</ul>';
 
   }
   else
   {
-    if($x->nodeName!='#text')
+      print $x->nodeValue;
+  }
+}
+
+
+function print_node_good_plain($x)
+{
+  if($x->hasChildNodes() || $x->nodeName!='#text')
+  {
+    echo '<ul>';
+    echo '<li>'.$x->nodeName.':';
+    $len=$x->childNodes->length;
+    for ($i=0;$i<$len;$i++) 
     {
-     echo '<li class="'.$x->nodeName.' " >'.$x->nodeName;
+      print_node($x->childNodes[$i]);
     }
-    else
-    {
-      print $x->nodeValue.':</li>';
-    }
+    echo '</li>';
+    echo '</ul>';
+
+  }
+  else
+  {
+      print $x->nodeValue;
   }
 }
 
