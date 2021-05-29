@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<discharge_card>
+  <institute_location><name>NCH Surat</name><address>Majura Gate</address><department>Psychiatry</department><phone>2208333</phone></institute_location>
+  <patient_demography>
+    <mrd>SUR/21/00989898</mrd>
+    <name></name>
+    <date_of_birth></date_of_birth>
+    <age><years></years><months></months><days></days><hours></hours><minutes></minutes></age>
+    <address></address>
+    <phone></phone>
+    <date_of_admission></date_of_admission>
+    <psychiatry_index></psychiatry_index>
+    <indoor_number></indoor_number>
+    <outdoor_number></outdoor_number>
+    <mlc_case><number></number><date></date></mlc_case>
+    <date_of_discharge></date_of_discharge>
+  </patient_demography>
+  <clinical_information>
+    <diagnosis><text></text><icd_code></icd_code></diagnosis>
+    <summary>
+      <presenting_complain></presenting_complain>
+      <past_history></past_history>
+      <family_history></family_history>
+      <substance_history></substance_history>
+      <personal_history></personal_history>
+      <patient_management_problems></patient_management_problems>
+    </summary>
+    <laboratory_investigations></laboratory_investigations>
+    <mental_status_examination_on_admission></mental_status_examination_on_admission>
+    <improvement_area></improvement_area>
+    <Global_Assessment_of_Functioning></Global_Assessment_of_Functioning>
+  </clinical_information>
+  <treatment_given>
+    <pharmacology></pharmacology>
+    <non_pharmacology></non_pharmacology>
+    <ECT></ECT>
+    <references></references>
+  </treatment_given>
+  <advice_on_discharge>
+    <pharmacology></pharmacology>
+    <non_pharmacology></non_pharmacology>    
+  </advice_on_discharge>
+  <notes>
+      <p1>ડિસ્ચાર્જ કાર્ડ અને ફાઈલ કાર્ડ બંને ખૂબ કાળજી પૂર્વક સાચવો અને દર વક્તે સાથે લાવજો.</p1>
+      <p2>આપણી સારવાર કરતા ડાકટર ફોલો અપ માટે , ઓપડી 13, સવારે 9-1 સુધી મળશે </p2>
+      <p3>ઇમરજેન્સી સંપર્ક:ટ્રોમા સેંટર</p3>
+  </notes>
+  <authorization>
+  <resident></resident>
+  <consultant></consultant>
+  </authorization>
+</discharge_card>
