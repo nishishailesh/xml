@@ -18,9 +18,10 @@
   <clinical_information>
     <diagnosis><text></text><icd_code></icd_code></diagnosis>
     <summary>
-      <presenting_complain></presenting_complain>
+      <presenting_complain>Breathlessness</presenting_complain>
       <past_history></past_history>
-      <family_history></family_history>
+      <family_history>Use s to create actionable list group items with hover, disabled, and active states by adding .list-group-item-action . We separate these ...
+‎Links and buttons · ‎Contextual classes · ‎With badges · ‎JavaScript beha</family_history>
       <substance_history></substance_history>
       <personal_history></personal_history>
       <patient_management_problems></patient_management_problems>
