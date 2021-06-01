@@ -11,7 +11,7 @@ $xml=simplexml_load_file("psychiatry.xml");
 //print_r($xml);
 echo '<ul><span class=bg-warning>'.$xml->getName().'</span>';
 edit_direct_xml($xml,'_99');
-//display_direct_xml($xml,'_99');
+display_direct_xml($xml,'_99');
 echo '</ul>';
 
 
@@ -42,15 +42,16 @@ function display_direct_xml($xml,$cls)
 
 function display_leaf($name,$value,$cls)
 {
-  echo '<li><b>'.$name.':</b>'.$value.'</li>';
+  echo '<li><div class=two_column>
+                <div><b>'.$name.':</b></div>
+                <div>'.$value.'</div>
+            </div></li>';
 }
 
 function display_branch($name,$ccls)
 {
     echo '<li><span class=" text-info" data-toggle="collapse" data-target=".'.$ccls.'" >'.$name.'</li>';
 }
-
-
 
 function edit_direct_xml($xml,$cls)
 {
@@ -71,158 +72,37 @@ function edit_direct_xml($xml,$cls)
   }
 }
 
-
 function edit_leaf($name,$value,$cls)
 {
-  echo '<li><b>'.$name.':</b><input type=text value=\''.$value.'\'></li>';
+  echo '<li>
+    <div class=two_column>
+      <div><b>'.$name.':</b></div>
+      <div>';
+  edit_field($value);    
+  echo '</div></div></li>';
 }
 
 
-////best display
-/*
-function display_direct_xml($xml,$cls)
+
+function edit_field($node)
 {
-  foreach($xml->children() as $node)
+  $type=$node->attributes()->{'type'};
+	if($type=='date')
   {
-    if (count($node->children()) == 0)
-    {
-      display_leaf($node->getName(),$node,$cls);
-    }
-    else
-    {
-      $ccls=get_classs();
-      display_branch($node->getName(),$ccls);
-      echo '<ul class="'.$ccls.' collapse show">';
-        display_direct_xml($node,$ccls);
-      echo '</ul>';
-    }
-  }
-}
-
-function display_leaf($name,$value,$cls)
-{
-  echo '<li><b>'.$name.':</b>'.$value.'</li>';
-}
-
-function display_branch($name,$ccls)
-{
-    echo '<li><span class=" text-info" data-toggle="collapse" data-target=".'.$ccls.'" >'.$name.'</li>';
-}
-
-
-
-
-$xml=simplexml_load_file("psychiatry.xml");
-//echo '<pre>';
-//print_r($xml);
-echo '<ul><span class=bg-warning>'.$xml->getName().'</span>';
-display_direct_xml($xml,'_99');
-echo '</ul>';
-
-//$objJsonDocument = json_encode($xml);
-//$ar = json_decode($objJsonDocument, True);
-//print_r($ar);
-//display_xml($xml->getName(),$ar,'xx');
-
-
-//$xmlDoc = new DOMDocument();
-//$xmlDoc->preserveWhiteSpace = false;
-
-//$xmlDoc->load("psychiatry.xml");
-//print $xmlDoc->saveXML();
-
-//$x = $xmlDoc->documentElement;
-//print_node($x,'root');
-
-function display_xml($key,$val,$pcn)
-{
-    if(is_array($val))
-    {
-      if(count($val)>0)
-      {
-        $ccn='_'.rand(10,100);
-        echo '<li class="'.$pcn.'" ><span class=" text-info " data-toggle="collapse" data-target=".'.$ccn.'" >'.$key.'</span><ul>';
-        foreach($val as $k=>$v)
-        {
-          display_xml($k,$v,$ccn);
-        }
-        echo '</ul></li>';
-      }
-      else
-      {
-        echo '<li class=" '.$pcn.'">'.$key.':</li>';
-      }
-    }
-    else
-    {
-      echo '<li class=" '.$pcn.'">'.$key.':'.$val.'</li>';
-    }
-}
-
-function print_nodex($x,$class_name)
-{
-  if($x->hasChildNodes() || $x->nodeName!='#text')
-  {
-    $child_class_name=str_replace('/','-',$x->getNodePath());
-    echo '<ul>';
-    echo '<li class=\''.$class_name.'\'>'.$x->nodeName.':';
-    $len=$x->childNodes->length;
-    for ($i=0;$i<$len;$i++) 
-    {
-      print_node($x->childNodes[$i],$child_class_name);
-    }
-    echo '</li>';
-    echo '</ul>';
+     echo '<input type=date value=\''.$node.'\'>'; 
   }
   else
   {
-      echo $x->nodeValue;
+    echo '<input type=text value=\''.$node.'\'>';
   }
+   
 }
-
-
-
-function print_node($x,$class_name)
-{
-  if($x->hasChildNodes() || $x->nodeName!='#text')
-  {
-    $child_class_name=str_replace('/','-',$x->getNodePath());
-    echo '<ul>';
-    echo '<li class=\''.$class_name.'\'>'.$x->nodeName.':';
-    $len=$x->childNodes->length;
-    for ($i=0;$i<$len;$i++) 
-    {
-      print_node($x->childNodes[$i],$child_class_name);
-    }
-    echo '</li>';
-    echo '</ul>';
-  }
-  else
-  {
-      echo $x->nodeValue;
-  }
-}
-
-function print_node_good_plain($x)
-{
-  if($x->hasChildNodes() || $x->nodeName!='#text')
-  {
-    echo '<ul>';
-    echo '<li>'.$x->nodeName.':';
-    $len=$x->childNodes->length;
-    for ($i=0;$i<$len;$i++) 
-    {
-      print_node($x->childNodes[$i]);
-    }
-    echo '</li>';
-    echo '</ul>';
-  }
-  else
-  {
-      print $x->nodeValue;
-  }
-}
-
-*/
 
 ?>
+<style>
+.two_column 
+{
+  display: grid;
+  grid-template-columns: 33% 67%;
+}
+</style>

@@ -8,12 +8,12 @@
     <age><years></years><months></months><days></days><hours></hours><minutes></minutes></age>
     <address></address>
     <phone></phone>
-    <date_of_admission>2021-11-20</date_of_admission>
+    <date_of_admission  type="date">2021-11-20</date_of_admission>
     <psychiatry_index></psychiatry_index>
     <indoor_number></indoor_number>
     <outdoor_number></outdoor_number>
-    <mlc_case><number></number><date></date></mlc_case>
-    <date_of_discharge></date_of_discharge>
+    <mlc_case><number></number><date  type="date"></date></mlc_case>
+    <date_of_discharge type="date"></date_of_discharge>
   </patient_demography>
   <clinical_information>
     <diagnosis><text></text><icd_code></icd_code></diagnosis>
