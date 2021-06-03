@@ -91,9 +91,17 @@ function edit_field($node)
   {
      echo '<input type=date value=\''.$node.'\'>'; 
   }
+	else if($type=='number')
+  {
+     echo '<input class="w-100 form-control" type=number value=\''.$node.'\'>'; 
+  }  
+	else if($type=='textarea')
+  {
+     echo '<textarea class="w-100 form-control" value=\''.$node.'\'>'.$node.'</textarea>'; 
+  }  
   else
   {
-    echo '<input type=text value=\''.$node.'\'>';
+    echo '<input type=text class="w-100 form-control" value=\''.$node.'\'>';
   }
    
 }
