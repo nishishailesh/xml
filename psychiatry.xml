@@ -6,7 +6,7 @@
     <name></name>
     <date_of_birth  type="date"></date_of_birth>
     <age><years  type="number"></years><months type="number"></months><days type="number"></days><hours type="number"></hours><minutes type="number"></minutes></age>
-    <address type="textarea"></address>
+    <address type="textarea" rows="5"></address>
     <phone></phone>
     <date_of_admission  type="date">2021-11-20</date_of_admission>
     <psychiatry_index></psychiatry_index>
@@ -16,7 +16,13 @@
     <date_of_discharge type="date"></date_of_discharge>
   </patient_demography>
   <clinical_information>
-    <diagnosis><text type="textarea"></text><icd_code></icd_code></diagnosis>
+    <diagnosis>
+      <text type="textarea" rows="3">Schizo affective disorder for last 7 years</text>
+      <icd>
+        <code type="dependent" depends_on="/discharge_card/clinicla_information/icd/name" field="name">F250</code>
+        <name type="select" source="table" table="icd" field="name">Paranoid Schizophrenia</name>
+      </icd>
+    </diagnosis>
     <summary>
       <presenting_complain>Breathlessness</presenting_complain>
       <past_history></past_history>
