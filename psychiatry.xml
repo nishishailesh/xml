@@ -3,9 +3,9 @@
   <institute_location><name>NCH Surat</name><address>Majura Gate</address><department>Psychiatry</department><phone>2208333</phone></institute_location>
   <patient_demography>
     <mrd>SUR/21/00989898</mrd>
-    <name></name>
+    <name>ABC XYZ</name>
     <date_of_birth  type="date"></date_of_birth>
-    <age><years  type="number"></years><months type="number"></months><days type="number"></days><hours type="number"></hours><minutes type="number"></minutes></age>
+    <age><years  type="number"></years><months type="number"></months><days type="number"></days></age>
     <address type="textarea" rows="5"></address>
     <phone></phone>
     <date_of_admission  type="date">2021-11-20</date_of_admission>
@@ -19,8 +19,14 @@
     <diagnosis>
       <text type="textarea" rows="3">Schizo affective disorder for last 7 years</text>
       <icd>
-        <code type="dependent" depends_on="/discharge_card/clinicla_information/icd/name" field="name">F250</code>
-        <name type="select" source="table" table="icd" field="name">Paranoid Schizophrenia</name>
+        <code 
+          type="dependent" 
+          depends_on="/discharge_card/clinical_information/diagnosis/icd/name" 
+          source="table" 
+          table="icd" 
+          source_field="name"
+          target_field="id">F250</code>
+        <name type="select" source="table" table="icd" field="name">Alcohol abuse, in remission</name>
       </icd>
     </diagnosis>
     <summary>
@@ -48,9 +54,9 @@
     <non_pharmacology></non_pharmacology>    
   </advice_on_discharge>
   <notes>
-      <p1 type="textarea">ડિસ્ચાર્જ કાર્ડ અને ફાઈલ કાર્ડ બંને ખૂબ કાળજી પૂર્વક સાચવો અને દર વક્તે સાથે લાવજો.</p1>
-      <p2 type="textarea">આપણી સારવાર કરતા ડાકટર ફોલો અપ માટે , ઓપડી 13, સવારે 9-1 સુધી મળશે </p2>
-      <p3 type="textarea">ઇમરજેન્સી સંપર્ક:ટ્રોમા સેંટર</p3>
+      <p1 type="textarea" rows="1">ડિસ્ચાર્જ કાર્ડ અને ફાઈલ કાર્ડ બંને ખૂબ કાળજી પૂર્વક સાચવો અને દર વક્તે સાથે લાવજો.</p1>
+      <p2 type="textarea" rows="1">આપણી સારવાર કરતા ડાકટર ફોલો અપ માટે , ઓપડી 13, સવારે 9-1 સુધી મળશે </p2>
+      <p3 type="textarea" rows="1">ઇમરજેન્સી સંપર્ક:ટ્રોમા સેંટર</p3>
   </notes>
   <authorization>
   <resident></resident>
