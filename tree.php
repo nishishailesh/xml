@@ -8,7 +8,7 @@ echo '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="
 $GLOBALS['class_name']=101;
 $GLOBALS['id_name']=101;
 
-$link=get_link('rootuser','rootuser');
+$link=get_link('root','nishiiilu');
 $GLOBALS['database']='xml';
 
 $sql='select * from xml where id=1';
@@ -26,10 +26,11 @@ run_query($link,$GLOBALS['database'],$sql);
 //print_r($GLOBALS['xml']);
 echo '<form method=post>';
 echo '<input type=submit name=action value=save>';
+
 echo '<ul><span class=bg-warning>'.$GLOBALS['xml']->getName().'</span>';
 edit_direct_xml($link,$GLOBALS['xml'],'_99');
-//display_direct_xml($GLOBALS['xml'],'_99');
 echo '</ul>';
+
 echo '</form>';
 
 //echo '<pre>';

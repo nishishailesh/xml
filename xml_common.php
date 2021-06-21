@@ -40,12 +40,17 @@ function display_leaf($name,$value,$cls)
             </div></li>';
 }
 
-function display_branch($name,$ccls)
+function display_branch($node,$ccls,$link)
 {
-    echo '<li><span class=" text-info" data-toggle="collapse" data-target=".'.$ccls.'" >'.$name.'</span></li>';
+  echo '<li><span class=" text-info " data-toggle="collapse" aria-expanded="false" data-target=".'.$ccls.'" >'.$node->getName().'</span>';
+        echo '<ul class="'.$ccls.' collapse show">';
+          edit_direct_xml($link,$node);
+        echo '</ul>';
+  echo '</li>';
+    
 }
 
-function edit_direct_xml($link,$xml,$cls)
+function edit_direct_xml($link,$xml)
 {
   foreach($xml->children() as $node)
   {
@@ -56,10 +61,7 @@ function edit_direct_xml($link,$xml,$cls)
     else
     {
       $ccls=get_classs();
-      display_branch($node->getName(),$ccls);
-      echo '<ul class="'.$ccls.' collapse show">';
-        edit_direct_xml($link,$node,$ccls);
-      echo '</ul>';
+      display_branch($node,$ccls,$link);
     }
   }
 }
@@ -67,11 +69,16 @@ function edit_direct_xml($link,$xml,$cls)
 function edit_leaf($link,$name,$value)
 {
   echo '<li>
-    <div class=two_column>
-      <div><b>'.$name.':</b></div>
-      <div>';
-  edit_field($link,$value);    
-  echo '</div></div></li>';
+          <div class=two_column>
+          
+            <div><b>'.$name.':</b>
+            </div>
+            
+            <div>';
+                edit_field($link,$value);    
+            echo'</div>
+          </div>
+        </li>';
 }
 
 

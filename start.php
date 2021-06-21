@@ -79,10 +79,12 @@ function edit($link,$id)
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	echo '<input type=text readonly name=id value=\''.$id.'\'>';
 	echo '<input type=submit name=action value=save>';
+  
+  
 	echo '<ul><span class=bg-warning>'.$xml->getName().'</span>';
-	edit_direct_xml($link,$xml,'_99');
-	//display_direct_xml($GLOBALS['xml'],'_99');
+        edit_direct_xml($link,$xml);
 	echo '</ul>';
+  
 	echo '</form>';
 }
 
