@@ -1,6 +1,4 @@
 <?php
-
-
 function get_classs()
 {
   $GLOBALS['class_name']=$GLOBALS['class_name']+1;
@@ -23,11 +21,7 @@ function display_direct_xml($xml,$cls)
     }
     else
     {
-      $ccls=get_classs();
-      display_branch($node->getName(),$ccls);
-      echo '<ul class="'.$ccls.' collapse show">';
-        display_direct_xml($node,$ccls);
-      echo '</ul>';
+      display_branch($node);
     }
   }
 }
@@ -40,15 +34,17 @@ function display_leaf($name,$value,$cls)
             </div></li>';
 }
 
-function display_branch($node,$ccls,$link)
+function display_branch($link,$node)
 {
-  echo '<li><span class=" text-info " data-toggle="collapse" aria-expanded="false" data-target=".'.$ccls.'" >'.$node->getName().'</span>';
-        echo '<ul class="'.$ccls.' collapse show">';
-          edit_direct_xml($link,$node);
-        echo '</ul>';
-  echo '</li>';
-    
+    $ccls=get_classs();
+    echo '<li>
+				<span class=" text-info" data-toggle="collapse" data-target=".'.$ccls.'" >'.$node->getName().'</span>';
+				echo '<ul class="'.$ccls.' collapse show">';
+					edit_direct_xml($link,$node);
+				echo '</ul>';	
+	echo '</li>';
 }
+
 
 function edit_direct_xml($link,$xml)
 {
@@ -56,29 +52,23 @@ function edit_direct_xml($link,$xml)
   {
     if (count($node->children()) == 0)
     {
-      edit_leaf($link,$node->getName(),$node);
+		edit_leaf($link,$node->getName(),$node);
     }
     else
     {
-      $ccls=get_classs();
-      display_branch($node,$ccls,$link);
+      display_branch($link,$node);
     }
   }
 }
 
 function edit_leaf($link,$name,$value)
 {
-  echo '<li>
-          <div class=two_column>
-          
-            <div><b>'.$name.':</b>
-            </div>
-            
-            <div>';
-                edit_field($link,$value);    
-            echo'</div>
-          </div>
-        </li>';
+	echo '<li>
+			<div class=two_column>
+				<div><b>'.$name.':</b></div>
+				<div>';edit_field($link,$value);echo '</div>
+			</div>
+	</li>';
 }
 
 

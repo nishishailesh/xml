@@ -1,7 +1,7 @@
 <?php
 require_once 'base/verify_login.php';
 require_once 'xml_common.php';
-head($GLOBALS['application_name']);
+//head($GLOBALS['application_name']);
 ///////User code below/////////////////////
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //echo '<pre>';print_r($_POST);echo '</pre>';
@@ -69,22 +69,14 @@ function edit($link,$id)
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);
 	$xml=simplexml_load_string($ar['xml']);
-	//save_post_as_xml($GLOBALS['xml']);
-	//$sql='update xml set xml=\''.$GLOBALS['xml']->asXML().'\' where  id=\''.$ar['id'].'\'';
-	//run_query($link,$GLOBALS['database'],$sql);
 
-	//echo '<pre>';
-	//print_r($GLOBALS['xml']);
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	echo '<input type=text readonly name=id value=\''.$id.'\'>';
 	echo '<input type=submit name=action value=save>';
-  
-  
 	echo '<ul><span class=bg-warning>'.$xml->getName().'</span>';
-        edit_direct_xml($link,$xml);
+	edit_direct_xml($link,$xml);
 	echo '</ul>';
-  
 	echo '</form>';
 }
 
