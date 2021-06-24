@@ -216,10 +216,11 @@ function get_dependent_value_from_table($link,$node,$xml)
 
 function main_menu()
 {
-	echo '<form method=post>
+	echo '<form method=post class="print_hide">
 	<input type=hidden name=session_name value=\''.session_name().'\'>
-	<button name=action value=new>New</button>
-	<button name=action value=get_edit_id>Edit</button>
+	<button  class="btn btn-sm btn-success m-1"  name=action value=new>New</button>
+	<button  class="btn btn-sm btn-success m-1" name=action value=get_edit_id>Edit</button>
+	<button  class="btn btn-sm btn-success m-1" name=action value=get_search>Search</button>
 	</form>';
 }
 ?>
@@ -230,5 +231,12 @@ function main_menu()
   grid-template-columns: 20% 80%;
 }
 
+@media only print 
+{
+.print_hide
+	 {
+		 display:none
+	 }
+}
 
 </style>

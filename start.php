@@ -23,8 +23,8 @@ else if($action=='get_edit_id')
 {
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
-	echo '<button name=action value=edit>Show</button>';
-	echo '<input type=text name=id>';
+	echo 'Database ID:<input type=text name=id>';
+	echo '<button class="btn btn-sm btn-primary" name=action value=edit>Show</button>';
 	echo '</form>';
 }
 else if($action=='edit')
@@ -46,9 +46,10 @@ function show_templates($link)
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	echo '<input type=hidden name=action value=select_template>';
+	echo '<h4 class="text-danger">Select template from below</h4>';
 	while($ar=get_single_row($result))
 	{
-		echo '<button name=xml_template_type value=\''.$ar['id'].'\'>'.$ar['template_name'].'</button>';
+		echo '<button class="btn btn-sm btn-secondary m-1" name=xml_template_type value=\''.$ar['id'].'\'>'.$ar['template_name'].'</button>';
 	}	
 	echo '</form>';
 }
@@ -72,9 +73,9 @@ function edit($link,$id)
 
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
-	echo '<input type=text readonly name=id value=\''.$id.'\'>';
-	echo '<input type=submit name=action value=save>';
-	echo '<ul><span class=bg-warning>'.$xml->getName().'</span>';
+	echo '<div style="position:fixed;top:0;left:300px"><span class=bg-warning>'.$xml->getName().':<input type=text readonly name=id value=\''.$id.'\'>';
+	echo '<input  class="btn btn-sm btn-secondary m-1"  type=submit name=action value=save></div>';
+	echo '<ul>';
 	edit_direct_xml($link,$xml);
 	echo '</ul>';
 	echo '</form>';

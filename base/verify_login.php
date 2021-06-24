@@ -108,7 +108,7 @@ if($verification_code==100 && !isset($GLOBALS['nojunk']))
 	$user=get_user_info($link,$_SESSION['login']);
 	$name=isset($user['name'])?$user['name']:'';
 	
-	echo '<form id=root_menu method=post class="form-group">
+	echo '<form id=root_menu method=post class="form-group print_hide" style="float:right;">
 			<input type=hidden name=session_name value=\''.session_name().'\'>
 			<button class="btn btn-primary" type=submit name=action value=change_password>Change Password</button>
 			<button class="btn btn-primary" type=submit name=action value=logout>Logout ('.$name.')</button>
