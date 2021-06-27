@@ -11,26 +11,26 @@ function get_idd()
   return '__'.$GLOBALS['id_name'];
 }
 
-function display_direct_xml($xml,$cls)
+function display_direct_xml($link,$xml)
 {
   foreach($xml->children() as $node)
   {
     if (count($node->children()) == 0)
     {
-      display_leaf($node->getName(),$node,$cls);
+      display_leaf($node->getName(),$node);
     }
     else
     {
-      display_branch($node);
+      display_branch($link,$node);
     }
   }
 }
 
-function display_leaf($name,$value,$cls)
+function display_leaf($name,$value)
 {
-  echo '<li><div class="two_column '.$cls.' ">
+  echo '<li><div class="two_column">
                 <div><b>'.$name.':</b></div>
-                <div>'.$value.'</div>
+                <div>'.nl2br($value).'</div>
             </div></li>';
 }
 
@@ -40,11 +40,22 @@ function display_branch($link,$node)
     echo '<li>
 				<span class=" text-info" data-toggle="collapse" data-target=".'.$ccls.'" >'.$node->getName().'</span>';
 				echo '<ul class="'.$ccls.' collapse show">';
-					edit_direct_xml($link,$node);
+					display_direct_xml($link,$node);
 				echo '</ul>';	
 	echo '</li>';
 }
 
+
+function edit_branch($link,$node)
+{
+    $ccls=get_classs();
+    echo '<li>
+				<span class=" text-info" data-toggle="collapse" data-target=".'.$ccls.'" >'.$node->getName().'</span>';
+				echo '<ul class="'.$ccls.' collapse show">';
+					edit_direct_xml($link,$node);
+				echo '</ul>';	
+	echo '</li>';
+}
 
 function edit_direct_xml($link,$xml)
 {
@@ -56,7 +67,7 @@ function edit_direct_xml($link,$xml)
     }
     else
     {
-      display_branch($link,$node);
+      edit_branch($link,$node);
     }
   }
 }
@@ -221,8 +232,280 @@ function main_menu()
 	<button  class="btn btn-sm btn-success m-1"  name=action value=new>New</button>
 	<button  class="btn btn-sm btn-success m-1" name=action value=get_edit_id>Edit</button>
 	<button  class="btn btn-sm btn-success m-1" name=action value=get_search>Search</button>
+	<button  class="btn btn-sm btn-success m-1" name=action value=get_view_id>View</button>
 	</form>';
 }
+
+
+
+function show_templates($link)
+{
+	$sql='select * from xml_template';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	echo '<form method=post>';
+	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
+	echo '<input type=hidden name=action value=select_template>';
+	echo '<h4 class="text-danger">Select template from below</h4>';
+	while($ar=get_single_row($result))
+	{
+		echo '<button class="btn btn-sm btn-secondary m-1" name=xml_template_type value=\''.$ar['id'].'\'>'.$ar['template_name'].'</button>';
+	}	
+	echo '</form>';
+}
+
+function insert_template($link,$template_id)
+{
+	$t_sql='select * from xml_template where id=\''.$template_id.'\'';
+	$t_result=run_query($link,$GLOBALS['database'],$t_sql);
+	$ar=get_single_row($t_result);
+	$sql='insert into xml (xml) values(\''.my_safe_string($link,$ar['xml']).'\')';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$id=last_autoincrement_insert($link);
+	append_meta($link,$id);
+	
+	return $id;
+}
+
+
+function append_meta($link,$id)
+{
+	$sql='select * from xml where id=\''.$id.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);
+	$xml=simplexml_load_string($ar['xml']);
+	$xml_data=$xml->addChild('XML', '');
+	$xml_data->addChild('ID', $id);
+	$xml_data->addChild('name', $xml->getName());	
+	$sql='update xml set xml=\''.my_safe_string($link,$xml->asXML()).'\' where  id=\''.$id.'\'';
+	run_query($link,$GLOBALS['database'],$sql);	
+}
+
+function edit($link,$id)
+{
+	$sql='select * from xml where id=\''.$id.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);
+	$xml=simplexml_load_string($ar['xml']);
+	//$xml_data=$xml->addChild('XML', '');
+	//$xml_data->addChild('ID', $id);
+	//$xml_data->addChild('name', $xml->getName());
+		
+	echo '<form method=post>';
+	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
+	//	<!-- style="position:fixed;top:0;left:300px"--> 
+	echo '<div><span class=bg-warning>'.$xml->getName().':<input type=text readonly name=id value=\''.$id.'\'>';
+	echo '<input  class="btn btn-sm btn-secondary m-1"  type=submit name=action value=save></div>';
+	echo '<ul>';
+	edit_direct_xml($link,$xml);
+	echo '</ul>';
+	echo '</form>';
+}
+
+
+
+function view($link,$id)
+{
+	$sql='select * from xml where id=\''.$id.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);
+	$xml=simplexml_load_string($ar['xml']);
+		
+	echo '<form method=post>';
+	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
+	//	<!-- style="position:fixed;top:0;left:300px"--> 
+	echo '<div><span class=bg-warning>'.$xml->getName().':<input type=text readonly name=id value=\''.$id.'\'>';
+	echo '<input  class="btn btn-sm btn-secondary m-1"  type=submit name=action value=save></div>';
+	echo '<ul>';
+	display_direct_xml($link,$xml);
+	echo '</ul>';
+	echo '</form>';
+}
+
+function save($link,$post)
+{
+	$sql='select * from xml where id=\''.$_POST['id'].'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);
+	$xml=simplexml_load_string($ar['xml']);
+	save_post_as_xml($xml);
+	$sql='update xml set xml=\''.my_safe_string($link,$xml->asXML()).'\' where  id=\''.$post['id'].'\'';
+	run_query($link,$GLOBALS['database'],$sql);	
+}
+
+
+function show_search_form($link)
+{
+	$sql='select * from search_path';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	echo '<form method=post>';
+	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
+	echo '<h4 class="text-danger">Input search requirements below</h4>';
+	echo '<div class=two_column>';
+	while($ar=get_single_row($result))
+	{
+		echo '<label for=\'xpath_'.$ar['id'].'\'>' .$ar['search_path']. '</label>';
+		echo '<input type=text id=\'xpath_'.$ar['id'].'\' name=\'xpath_'.$ar['id'].'\'>';
+	}	
+	echo '</div>';
+	echo '<button  class="btn btn-sm btn-secondary m-1"  name=action value=show_search_result>Search</button>';
+
+	echo '</form>';	
+}
+
+function get_xpath($link,$id)
+{
+	$sql='select * from search_path where id=\''.$id.'\'';
+	//echo $sql;
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);
+	//echo 'sssss';
+	//print_r($ar);
+	return $ar['search_path'];	
+}
+
+function find_search_result($link,$post)
+{
+	//echo '<form method=post>';
+	//echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
+	//echo '<h4 class="text-danger">Select record from below</h4>';
+	$db_array=array();
+	
+	foreach($post as $k=>$v)
+	{
+		//echo substr($k,0,6);
+		if(substr($k,0,6)=='xpath_' && strlen($v)>0)
+		{
+		$db_array[$k]=array();
+
+		$search_id=substr($k,6);
+		//echo $search_id;
+		$sql='select * from xml';
+			$result=run_query($link,$GLOBALS['database'],$sql);
+			while($ar=get_single_row($result))
+			{
+				$xml=simplexml_load_string($ar['xml']);
+				if(!$xml){continue;}
+				$xpath=get_xpath($link,$search_id);
+				//echo 'ddddd'.$xpath;
+				if(count($xresult = $xml->xpath($xpath))>0)
+				{
+					foreach($xresult as $xk=>$xv)
+					{
+						//echo $ar['id'].'--->'.$xpath.'====='.$xv.'<br>';
+						if(substr_count(strtolower($xv),strtolower($v))>0)
+						{
+							//echo '<h5>found</h5>';							
+							$db_array[$k][]=$ar['id'];
+						}
+					}
+				}
+			}
+		}
+	}
+	//echo '<pre>';print_r($db_array);
+	$union=array();
+	$intersect=array();
+	$first=0;
+	foreach($db_array as $ids)
+	{
+		$union=$union+$ids;
+		if($first==0){$intersect=$ids;$first=1;}
+		else{$intersect=array_intersect($intersect,$ids);}
+	}
+	//echo '<pre>';print_r($db_array);
+	//echo '<pre>';print_r($union);
+	//echo '<pre>';print_r($intersect);
+	
+	//echo '</form>';	
+	return array($union,$intersect);
+}
+
+function show_search_result($link,$sa,$post)
+{
+	echo '<table class="table table-sm table-striped">';
+	echo '<tr><th  colspan="100%">Any Condition Matching</th></tr>';
+	xpath_search_header($link,$post);
+	foreach($sa[0] as $id)
+	{
+		xml_id_view_button($link,$id,'target=_blank',$id,$post);		
+	}
+	echo '</table>';
+	
+	echo '<table  class="table table-sm table-striped">';
+	echo '<tr><th colspan="100%">All Condition Matching</th></tr>';
+	xpath_search_header($link,$post);
+	foreach($sa[1] as $id)
+	{
+		xml_id_view_button($link,$id,'target=_blank',$id,$post);		
+	}
+	echo '</table>';
+
+}
+
+function xpath_search_header($link,$post)
+{
+	echo '<tr><td>ID</td>';
+	foreach($post as $k=>$v)
+	{
+		if(substr($k,0,6)=='xpath_' && strlen($v)>0)
+		{
+			$search_id=substr($k,6);
+			//echo $search_id;
+			$xpath=get_xpath($link,$search_id);
+			echo '<td>'.$xpath.'</td>';
+		}
+	}	
+	echo '</tr>';
+
+}
+function xml_id_view_button($link,$id,$target='',$label='View',$xpath_array)
+{
+	$id_data=get_id_data($link,$id,$xpath_array);
+	echo '<tr>';
+	echo '<td><div><form method=post action=view_single.php class=print_hide '.$target.'>
+	<button class="btn btn-outline-success btn-sm text-dark " name=id value=\''.$id.'\' >'.$label.'</button>
+	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
+	<input type=hidden name=action value=view_single>';
+	
+	echo '</form></td></div>';
+	foreach ($id_data as $v)
+	{
+		echo '<td>'.$v.'</td>';
+	}
+	echo '</tr>';
+}
+
+function get_id_data($link,$id,$xpath_array)
+{
+	$sql='select * from xml where id=\''.$id.'\'';
+	$result=run_query($link,$GLOBALS['database'],$sql);
+	$ar=get_single_row($result);
+	$xml=simplexml_load_string($ar['xml']);
+	if(!$xml){return;}
+	$ret=array();
+	foreach($xpath_array as $k=>$v)
+	{
+		if(substr($k,0,6)=='xpath_' && strlen($v)>0)
+		{
+			$search_id=substr($k,6);
+			//echo $search_id;
+			$xpath=get_xpath($link,$search_id);
+			//echo 'ddddd'.$xpath;
+			if(count($xresult = $xml->xpath($xpath))>0)
+			{
+				foreach($xresult as $xk=>$xv)
+				{
+					//print_r($xresult);
+					$ret[]=(string)$xv[0];
+				}
+			}
+		}
+	}	
+	//print_r($ret);
+	return $ret;
+}
+
+
 ?>
 <style>
 .two_column 
@@ -237,6 +520,11 @@ function main_menu()
 	 {
 		 display:none
 	 }
+}
+
+*
+{
+	word-break: break-all;
 }
 
 </style>
