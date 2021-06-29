@@ -1,9 +1,11 @@
 <?php
+$GLOBALS['nojunk']='';
 require_once 'base/verify_login.php';
 require_once 'xml_common.php';
 ///////User code below/////////////////////
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //echo '<pre>';print_r($_POST);echo '</pre>';
+
 $action=isset($_POST['action'])?$_POST['action']:'';
 //echo 'action='.$action;
 
@@ -39,25 +41,25 @@ function caret_to_slashh($str)
        '_discharge_card_advice_on_discharge 	_discharge_card_advice_on_discharge	_discharge_card_authorization		_discharge_card_authorization';
 */
 
-'_discharge_card_institute_location	_discharge_card_patient_demography'
-'_discharge_card_treatment_given	_discharge_card_patient_demography'
-'_discharge_card_notes			_discharge_card_clinical_information'
-'_discharge_card_authorization		_discharge_card_clinical_information'
+'_discharge_card_institute_location		_discharge_card_patient_demography'
+'_discharge_card_treatment_given		_discharge_card_patient_demography'
+'_discharge_card_notes					_discharge_card_clinical_information'
+'_discharge_card_authorization			_discharge_card_clinical_information'
 '_discharge_card_advice_on_discharge 	_discharge_card_clinical_information';
 
   	grid-gap: 10px;
-  	background-color: #96F3;
   	padding: 10px;
 }
 
 
-#_discharge_card_institute_location	{grid-area:_discharge_card_institute_location;}
+#_discharge_card_institute_location		{grid-area:_discharge_card_institute_location;}
 #_discharge_card_clinical_information	{grid-area:_discharge_card_clinical_information;}
-#_discharge_card_patient_demography	{grid-area:_discharge_card_patient_demography;}
-#_discharge_card_treatment_given	{grid-area:_discharge_card_treatment_given;}
+#_discharge_card_patient_demography		{grid-area:_discharge_card_patient_demography;}
+#_discharge_card_treatment_given		{grid-area:_discharge_card_treatment_given;}
 #_discharge_card_advice_on_discharge	{grid-area:_discharge_card_advice_on_discharge;}
-#_discharge_card_notes			{grid-area:_discharge_card_notes;}
-#_discharge_card_authorization		{grid-area:_discharge_card_authorization;}
+#_discharge_card_notes					{grid-area:_discharge_card_notes;}
+#_discharge_card_authorization			{grid-area:_discharge_card_authorization;}
+
 </style>
 
 <?php
@@ -86,8 +88,9 @@ function grid_display_leaf($node)
 
   echo '<li id='.$element_name.'><div class="two_column">
                 <div><b>'.$node->getName().':</b></div>
-                <div>'.nl2br((string)$node).'</div>
+                <div>'.(string)$node.'</div>
             </div></li>';
+  //<div>'.nl2br((string)$node).'</div>
 }
 
 function grid_display_branch($link,$node)
@@ -113,16 +116,16 @@ function view_grid($link,$id)
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	//	<!-- style="position:fixed;top:0;left:300px"--> 
-	echo '<div class=bg-warning><span ><h2 class="d-inline">'.$xml->getName().':</h2><input type=text readonly name=id value=\''.$id.'\'>';
-	echo '<input  class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=edit>';
-	echo '<button  formaction=print_single.php formtarget=_blank class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=print>print</button></div>';
+	//echo '<div class=bg-warning><span ><h2 class="d-inline">'.$xml->getName().':</h2><input type=text readonly name=id value=\''.$id.'\'>';
+	echo '<div class=bg-warning><span ><h2 class="d-inline">'.$xml->getName().':'.$id.'</h2>';
+	//echo '<input  class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=edit>';
+	//echo '<button  formaction=print_single.php formtarget=_blank class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=print>print</button>';
+	echo '</div>';
 	echo '<ul id=root>';
 	grid_display_direct_xml($link,$xml);
 	echo '</ul>';
 	echo '</form>';
 }
-
-
 
 ?>
 

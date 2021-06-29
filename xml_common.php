@@ -30,9 +30,10 @@ function display_leaf($name,$value)
 {
   echo '<li><div class="two_column">
                 <div><b>'.$name.':</b></div>
-                <div>'.nl2br($value).'</div>
+                <div>'.$value.'</div>
             </div></li>';
 }
+//<div>'.nl2br($value).'</div>
 
 function display_branch($link,$node)
 {
@@ -291,12 +292,16 @@ function edit($link,$id)
 	//$xml_data->addChild('name', $xml->getName());
 		
 	echo '<script language="javascript" type="text/javascript" src="tinymce/tiny_mce.js"></script>';
-	echo '<script language="javascript" type="text/javascript">tinyMCE.init({mode : "textareas"});</script>';
+	echo '<script language="javascript" type="text/javascript">
+	tinyMCE.init(
+					{
+						mode : "textareas",
+					});</script>';
 	
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	//	<!-- style="position:fixed;top:0;left:300px"--> 
-	echo '<div class=bg-warning><span ><h2 class="d-inline">'.$xml->getName().'</h2>:<input type=text readonly name=id value=\''.$id.'\'>';
+	echo '<div class=bg-warning><span ><h2 class="d-inline">'.$xml->getName().':<input type=text readonly name=id value=\''.$id.'\'></h2>';
 	echo '<input  class="btn btn-sm btn-secondary m-1"  type=submit name=action value=save>';
 	echo '<input  class="btn btn-sm btn-secondary m-1"  type=submit name=action value=view></div>';
 	echo '<ul>';
@@ -317,9 +322,10 @@ function view($link,$id)
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	//	<!-- style="position:fixed;top:0;left:300px"--> 
-	echo '<div class=bg-warning><span ><h2 class="d-inline">'.$xml->getName().':</h2><input type=text readonly name=id value=\''.$id.'\'>';
+	echo '<div class=bg-warning><span ><h2 class="d-inline">'.$xml->getName().':<input type=text readonly name=id value=\''.$id.'\'></h2>';
 	echo '<input  class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=edit>';
-	echo '<button  formaction=print_single.php formtarget=_blank class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=print>print</button></div>';
+	//echo '<button  formaction=print_single.php formtarget=_blank class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=print>print</button>';
+	echo '</div>';
 	echo '<ul>';
 	display_direct_xml($link,$xml);
 	echo '</ul>';
@@ -543,6 +549,11 @@ function get_id_data($link,$id,$xpath_array)
 *
 {
 	word-break: break-all;
+}
+
+p {
+  margin: 0px;
+  padding: 0px;
 }
 
 </style>

@@ -1,0 +1,31 @@
+<style>
+
+#root
+{
+display:grid;
+grid-template-areas: 	"one 	one 	one"
+						"three 	five	four";
+}
+
+#one{grid-area:one;}
+#two{grid-area:four;}
+#four{grid-area:three;}
+#five{grid-area:six;}
+#six{grid-area:five;}
+#ex{grid-area:one;}
+
+</style>
+
+<ul id=root>
+	<li id=one>apple one</li>
+	<li id=two>banana two
+	<ul>
+		<li id=ex>x</li>
+		<li>y</li>
+	</ul>
+	</li>
+	<li id=three>banana three</li>
+	<li id=four>banana four</li>
+	<li id=five>banana five</li>
+	<li id=six>banana six</li>
+</ul>
