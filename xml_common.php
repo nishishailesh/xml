@@ -230,9 +230,9 @@ function main_menu()
 	echo '<form method=post class="print_hide">
 	<input type=hidden name=session_name value=\''.session_name().'\'>
 	<button  class="btn btn-sm btn-success m-1"  name=action value=new>New</button>
-	<button  class="btn btn-sm btn-success m-1" name=action value=get_edit_id>Edit</button>
-	<button  class="btn btn-sm btn-success m-1" name=action value=get_search>Search</button>
-	<button  class="btn btn-sm btn-success m-1" name=action value=get_view_id>View</button>
+	<!-- <button  class="btn btn-sm btn-success m-1" name=action value=get_edit_id>Edit</button>
+	<button  class="btn btn-sm btn-success m-1" name=action value=get_search>Search</button> -->
+	<button  class="btn btn-sm btn-success m-1" name=action value=get_view_id>Search</button>
 	</form>';
 }
 
@@ -290,11 +290,15 @@ function edit($link,$id)
 	//$xml_data->addChild('ID', $id);
 	//$xml_data->addChild('name', $xml->getName());
 		
+	echo '<script language="javascript" type="text/javascript" src="tinymce/tiny_mce.js"></script>';
+	echo '<script language="javascript" type="text/javascript">tinyMCE.init({mode : "textareas"});</script>';
+	
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	//	<!-- style="position:fixed;top:0;left:300px"--> 
-	echo '<div><span class=bg-warning>'.$xml->getName().':<input type=text readonly name=id value=\''.$id.'\'>';
-	echo '<input  class="btn btn-sm btn-secondary m-1"  type=submit name=action value=save></div>';
+	echo '<div class=bg-warning><span ><h2 class="d-inline">'.$xml->getName().'</h2>:<input type=text readonly name=id value=\''.$id.'\'>';
+	echo '<input  class="btn btn-sm btn-secondary m-1"  type=submit name=action value=save>';
+	echo '<input  class="btn btn-sm btn-secondary m-1"  type=submit name=action value=view></div>';
 	echo '<ul>';
 	edit_direct_xml($link,$xml);
 	echo '</ul>';
@@ -313,8 +317,9 @@ function view($link,$id)
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	//	<!-- style="position:fixed;top:0;left:300px"--> 
-	echo '<div><span class=bg-warning>'.$xml->getName().':<input type=text readonly name=id value=\''.$id.'\'>';
-	echo '<input  class="btn btn-sm btn-secondary m-1"  type=submit name=action value=save></div>';
+	echo '<div class=bg-warning><span ><h2 class="d-inline">'.$xml->getName().':</h2><input type=text readonly name=id value=\''.$id.'\'>';
+	echo '<input  class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=edit>';
+	echo '<button  formaction=print_single.php formtarget=_blank class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=print>print</button></div>';
 	echo '<ul>';
 	display_direct_xml($link,$xml);
 	echo '</ul>';
@@ -329,7 +334,7 @@ function save($link,$post)
 	$xml=simplexml_load_string($ar['xml']);
 	save_post_as_xml($xml);
 	$sql='update xml set xml=\''.my_safe_string($link,$xml->asXML()).'\' where  id=\''.$post['id'].'\'';
-	run_query($link,$GLOBALS['database'],$sql);	
+	return run_query($link,$GLOBALS['database'],$sql);
 }
 
 
@@ -339,15 +344,16 @@ function show_search_form($link)
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
-	echo '<h4 class="text-danger">Input search requirements below</h4>';
+	echo '<h4 class="text-danger">Search by Content</h4>';
 	echo '<div class=two_column>';
 	while($ar=get_single_row($result))
 	{
 		echo '<label for=\'xpath_'.$ar['id'].'\'>' .$ar['search_path']. '</label>';
 		echo '<input type=text id=\'xpath_'.$ar['id'].'\' name=\'xpath_'.$ar['id'].'\'>';
-	}	
+	}
+		echo '<div></div><button  class="btn btn-sm btn-primary m-1"  name=action value=show_search_result>Search</button>';
+	
 	echo '</div>';
-	echo '<button  class="btn btn-sm btn-secondary m-1"  name=action value=show_search_result>Search</button>';
 
 	echo '</form>';	
 }
@@ -427,7 +433,7 @@ function show_search_result($link,$sa,$post)
 	xpath_search_header($link,$post);
 	foreach($sa[0] as $id)
 	{
-		xml_id_view_button($link,$id,'target=_blank',$id,$post);		
+		xml_id_view_button($link,$id,$action='','target=_blank',$id,$post);		
 	}
 	echo '</table>';
 	
@@ -436,7 +442,7 @@ function show_search_result($link,$sa,$post)
 	xpath_search_header($link,$post);
 	foreach($sa[1] as $id)
 	{
-		xml_id_view_button($link,$id,'target=_blank',$id,$post);		
+		xml_id_view_button($link,$id,$action='','target=_blank',$id,$post);		
 	}
 	echo '</table>';
 
@@ -458,11 +464,11 @@ function xpath_search_header($link,$post)
 	echo '</tr>';
 
 }
-function xml_id_view_button($link,$id,$target='',$label='View',$xpath_array)
+function xml_id_view_button($link,$id,$action='',$target='',$label='View',$xpath_array)
 {
 	$id_data=get_id_data($link,$id,$xpath_array);
 	echo '<tr>';
-	echo '<td><div><form method=post action=view_single.php class=print_hide '.$target.'>
+	echo '<td><div><form method=post '.$action.' class=print_hide '.$target.'>
 	<button class="btn btn-outline-success btn-sm text-dark " name=id value=\''.$id.'\' >'.$label.'</button>
 	<input type=hidden name=session_name value=\''.$_POST['session_name'].'\'>
 	<input type=hidden name=action value=view_single>';
@@ -512,6 +518,18 @@ function get_id_data($link,$id,$xpath_array)
 {
   display: grid;
   grid-template-columns: 20% 80%;
+}
+
+.two_column_40_60
+{
+  display: grid;
+  grid-template-columns: 40% 60%;
+}
+
+.two_column_auto
+{
+  display: grid;
+  grid-template-columns: auto auto;
 }
 
 @media only print 

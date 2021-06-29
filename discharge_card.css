@@ -1,0 +1,16 @@
+.basic_form 
+	{
+	  display: grid;
+	  grid-template-columns: 25% 40% 35%;
+	}	
+
+#main_menu, #root_menu, .data_header, .sh, .print_hide
+	 {
+		 display:none
+	 }
+
+.horiz
+	{
+	  display: grid;
+	  grid-template-columns: 34% 33% 33%;
+	}	
