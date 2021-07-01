@@ -126,7 +126,8 @@ function edit_field($link,$node)
 	else if($type=='textarea')
   {
      $rows=$node->attributes()->rows;
-     echo '<textarea id=\''.$idd.'\' name=\''.$element_name.'\' class="w-100 form-control" rows='.$rows.' >'.$node.'</textarea>'; 
+     $tiny=isset($node->attributes()->html)?$node->attributes()->html:'';
+     echo '<textarea id=\''.$idd.'\' name=\''.$element_name.'\' class="w-100 form-control '.$tiny.'" rows='.$rows.' >'.$node.'</textarea>'; 
   }
 	else if($type=='select')
   {
@@ -287,16 +288,18 @@ function edit($link,$id)
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);
 	$xml=simplexml_load_string($ar['xml']);
-	//$xml_data=$xml->addChild('XML', '');
-	//$xml_data->addChild('ID', $id);
-	//$xml_data->addChild('name', $xml->getName());
-		
-	echo '<script language="javascript" type="text/javascript" src="tinymce/tiny_mce.js"></script>';
+	echo '<script language="javascript" type="text/javascript" src="tinymce/tinymce.min.js"></script>';
 	echo '<script language="javascript" type="text/javascript">
 	tinyMCE.init(
-					{
-						mode : "textareas",
-					});</script>';
+
+			{
+			mode : "specific_textareas",
+			editor_selector : "tiny",
+			plugins: "table",
+			menubar : "false",
+			toolbar: "table undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent"
+			}
+		);</script>';
 	
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
