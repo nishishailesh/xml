@@ -39,7 +39,7 @@ function display_branch($link,$node)
 {
     $ccls=get_classs();
     echo '<li>
-				<span class=" text-info" data-toggle="collapse" data-target=".'.$ccls.'" >'.$node->getName().'</span>';
+				<span class=" text-info" data-toggle="collapse" data-target=".'.$ccls.'" ><b>'.$node->getName().'</b></span>';
 				echo '<ul class="'.$ccls.' collapse show">';
 					display_direct_xml($link,$node);
 				echo '</ul>';	
@@ -51,7 +51,7 @@ function edit_branch($link,$node)
 {
     $ccls=get_classs();
     echo '<li>
-				<span class=" text-info" data-toggle="collapse" data-target=".'.$ccls.'" >'.$node->getName().'</span>';
+				<span class=" text-info" data-toggle="collapse" data-target=".'.$ccls.'" ><b>'.$node->getName().'</b></span>';
 				echo '<ul class="'.$ccls.' collapse show">';
 					edit_direct_xml($link,$node);
 				echo '</ul>';	
@@ -127,6 +127,7 @@ function edit_field($link,$node)
   {
      $rows=$node->attributes()->rows;
      $tiny=isset($node->attributes()->html)?$node->attributes()->html:'';
+     //echo '<h1>xx'.$tiny.'yy</h1>';
      echo '<textarea id=\''.$idd.'\' name=\''.$element_name.'\' class="w-100 form-control '.$tiny.'" rows='.$rows.' >'.$node.'</textarea>'; 
   }
 	else if($type=='select')
@@ -327,7 +328,7 @@ function view($link,$id)
 	//	<!-- style="position:fixed;top:0;left:300px"--> 
 	echo '<div class=bg-warning><span ><h2 class="d-inline">'.$xml->getName().':<input type=text readonly name=id value=\''.$id.'\'></h2>';
 	echo '<input  class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=edit>';
-	//echo '<button  formaction=print_single.php formtarget=_blank class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=print>print</button>';
+	echo '<button  formaction=print_single.php formtarget=_blank class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=print>print</button>';
 	echo '</div>';
 	echo '<ul>';
 	display_direct_xml($link,$xml);

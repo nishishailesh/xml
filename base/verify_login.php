@@ -109,10 +109,26 @@ if($verification_code==100 && !isset($GLOBALS['nojunk']))
 	$name=isset($user['name'])?$user['name']:'';
 	
 	echo '<form id=root_menu method=post class="form-group print_hide" style="float:right;">
-			<input type=hidden name=session_name value=\''.session_name().'\'>
-			<button class="btn btn-primary" type=submit name=action value=change_password>Change Password</button>
-			<button class="btn btn-primary" type=submit name=action value=logout>Logout ('.$name.')</button>
-		</form>';		
+			<input type=hidden name=session_name value=\''.session_name().'\'>';
+			
+			//<button class="btn btn-primary" type=submit name=action value=change_password>Change Password</button>
+			//<button class="btn btn-primary" type=submit name=action value=logout>Logout ('.$name.')</button>
+			
+			
+	echo 	'<div class="btn-group">
+				<div class="dropdown m-0 p-0">
+					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown"><img width=35 src=account.png /></button>
+					<div class="dropdown-menu m-0 p-0 dropdown-menu-right">
+						<div class="btn-group-vertical d-block" >
+							<button class="btn btn-outline-primary m-0 p-0" type=submit name=action value=change_password	>Change Password	</button>
+							<button class="btn btn-outline-primary m-0 p-0" type=submit name=action value=logout			>Logout ('.$name.')	</button>
+						</div>
+					</div>
+				</div>
+			</div>';
+
+
+	echo 	'</form>';		
 }
 
 //Over to start.php (or any calling script)
