@@ -15,9 +15,15 @@ if($action=='print')
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);
 	$xml=simplexml_load_string($ar['xml']);
+
 	
 	$xslt = new xsltProcessor;
-	$xslt->importStyleSheet(DomDocument::load('psychiatry.xsl'));
+	$sqlt='select xsl from xml_template where id=1';
+	$resultt=run_query($link,$GLOBALS['database'],$sqlt);
+	$art=get_single_row($resultt);
+	//$xslt->importStyleSheet(DomDocument::load('psychiatry.xsl'));
+	$xslt->importStyleSheet(simplexml_load_string($art['xsl']));
+		
 	print $xslt->transformToXML($xml);
 }
 
