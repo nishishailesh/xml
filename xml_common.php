@@ -17,7 +17,8 @@ function display_direct_xml($link,$xml)
   {
     if (count($node->children()) == 0)
     {
-      display_leaf($node->getName(),$node);
+	  $html=$node->attributes()->{'html'};   
+      display_leaf($node->getName(),$node,$html);
     }
     else
     {
@@ -26,12 +27,23 @@ function display_direct_xml($link,$xml)
   }
 }
 
-function display_leaf($name,$value)
+function display_leaf($name,$value,$html)
 {
-  echo '<li><div class="two_column">
+	if($html=='')
+	{
+		echo '<li><div class="two_column">
                 <div><b>'.$name.':</b></div>
-                <div>'.$value.'</div>
+                <div>'.nl2br($value).'</div>
             </div></li>';
+	}
+	else
+	{
+		echo '<li><div class="two_column">
+                <div><b>'.$name.':</b></div>
+                <div>'.($value).'</div>
+            </div></li>';		
+		
+	}
 }
 //<div>'.nl2br($value).'</div>
 
@@ -115,20 +127,24 @@ function edit_field($link,$node)
   $dom = dom_import_simplexml($node);
   $element_name=slash_to_caret($dom->getNodePath());
   $type=$node->attributes()->{'type'};
+  $readonly=$node->attributes()->{'readonly'};
+  
 	if($type=='date')
   {
-     echo '<input id=\''.$idd.'\' name=\''.$element_name.'\' type=date value=\''.$node.'\'>'; 
+     echo '<input '.$readonly.' id=\''.$idd.'\' name=\''.$element_name.'\' type=date value=\''.$node.'\'>'; 
   }
 	else if($type=='number')
   {
-     echo '<input id=\''.$idd.'\' name=\''.$element_name.'\' class="w-100 form-control" type=number value=\''.$node.'\'>'; 
+     echo '<input '.$readonly.' id=\''.$idd.'\' name=\''.$element_name.'\' class="w-100 form-control" type=number value=\''.$node.'\'>'; 
   }  
 	else if($type=='textarea')
   {
      $rows=$node->attributes()->rows;
      $tiny=isset($node->attributes()->html)?$node->attributes()->html:'';
      //echo '<h1>xx'.$tiny.'yy</h1>';
-     echo '<textarea id=\''.$idd.'\' name=\''.$element_name.'\' class="w-100 form-control '.$tiny.'" rows='.$rows.' >'.$node.'</textarea>'; 
+     //all text area are tiny
+     //$tiny='tiny';
+     echo '<textarea '.$readonly.' id=\''.$idd.'\' name=\''.$element_name.'\' class="w-100 form-control '.$tiny.'" rows='.$rows.' >'.$node.'</textarea>'; 
   }
 	else if($type=='select')
   {
@@ -144,12 +160,13 @@ function edit_field($link,$node)
       $sql='select `'.$field_name.'`  from `'.$table.'`';
       //echo $sql;
       //$link,$sql,$field_name,$select_name,$select_id,$disabled='',$default='',$blank='no'
-      mk_select_from_sql($link,$sql,$field_name,$element_name,$idd,'',$node,$blank='yes');
+      mk_select_from_sql($link,$sql,$field_name,$element_name,$idd,$readonly,$node,$blank='yes');
     }
   } 
+
   else
   {
-    echo '<input type=text class="w-100 form-control"  name=\''.$element_name.'\'  value=\''.$node.'\'>';
+    echo '<input '.$readonly.' type=text class="w-100 form-control"  name=\''.$element_name.'\'  value=\''.$node.'\'>';
   }
    
 }
@@ -261,10 +278,10 @@ function insert_template($link,$template_id)
 	$t_sql='select * from xml_template where id=\''.$template_id.'\'';
 	$t_result=run_query($link,$GLOBALS['database'],$t_sql);
 	$ar=get_single_row($t_result);
-	$sql='insert into xml (xml) values(\''.my_safe_string($link,$ar['xml']).'\')';
+	$sql='insert into xml (xml_template_id, xml) values(\''.$template_id.'\' , \''.my_safe_string($link,$ar['xml']).'\')';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$id=last_autoincrement_insert($link);
-	append_meta($link,$id);
+	//append_meta($link,$id);
 	
 	return $id;
 }
@@ -322,18 +339,23 @@ function view($link,$id)
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);
 	$xml=simplexml_load_string($ar['xml']);
-		
+	$user_data=get_user_info($link,$_SESSION['login']);
+	
 	echo '<form method=post>';
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	//	<!-- style="position:fixed;top:0;left:300px"--> 
-	echo '<div class=bg-warning><span ><h2 class="d-inline">'.$xml->getName().':<input type=text readonly name=id value=\''.$id.'\'></h2>';
-	echo '<input  class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=edit>';
-	echo '<button  formaction=print_single.php formtarget=_blank class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=print>print</button>';
+	echo '<div class=bg-warning>
+				<h2 class="d-inline">'.$xml->getName().':<input type=text size=10 readonly name=id value=\''.$id.'\'></h2>';
+				echo '<input  class="btn btn-sm btn-secondary m-1 print_hide" type=submit name=action value=edit>';
+				echo '<button  formaction=print_single.php formtarget=_blank class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=print>print</button>';
+				echo 'Last Edited by:'.$user_data['name'].'('.$_SESSION['login'].') at '.$ar['recording_time'];
+				
 	echo '</div>';
 	echo '<ul>';
 	display_direct_xml($link,$xml);
 	echo '</ul>';
 	echo '</form>';
+	
 }
 
 function save($link,$post)
@@ -343,7 +365,12 @@ function save($link,$post)
 	$ar=get_single_row($result);
 	$xml=simplexml_load_string($ar['xml']);
 	save_post_as_xml($xml);
-	$sql='update xml set xml=\''.my_safe_string($link,$xml->asXML()).'\' where  id=\''.$post['id'].'\'';
+	$sql='update xml set 
+				xml=\''.my_safe_string($link,$xml->asXML()).'\' ,
+				recorded_by=\''.$_SESSION['login'].'\' ,
+				recording_time=\''.strftime("%Y%m%d%H%M%S").'\' 
+				
+			where  id=\''.$post['id'].'\'';
 	return run_query($link,$GLOBALS['database'],$sql);
 }
 

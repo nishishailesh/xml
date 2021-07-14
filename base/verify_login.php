@@ -115,7 +115,7 @@ if($verification_code==100 && !isset($GLOBALS['nojunk']))
 			//<button class="btn btn-primary" type=submit name=action value=logout>Logout ('.$name.')</button>
 			
 			
-	echo 	'<div class="btn-group">
+	echo 	'<div class="btn-group print_hide">
 				<div class="dropdown m-0 p-0">
 					<button class="btn btn-outline-primary dropdown-toggle m-0 p-0" type="button" data-toggle="dropdown"><img width=35 src=account.png /></button>
 					<div class="dropdown-menu m-0 p-0 dropdown-menu-right">

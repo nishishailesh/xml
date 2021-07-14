@@ -1,9 +1,11 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php ="http://php.net/xsl">
   <xsl:template match="/">
 		  <table class="table">
-				<tr>
-					<th><h1 class="text-center"><xsl:value-of select="/discharge_card/institute_location/name"/></h1></th>
-					<th><h1 class="text-center"><xsl:value-of select="/discharge_card/institute_location/address"/></h1></th>
+				<tr><th colspan="2"><h3 class="text-center">
+					Discharge Card : 
+					<xsl:value-of select="/discharge_card/institute_location/name"/>,
+					<xsl:value-of select="/discharge_card/institute_location/address"/>
+					</h3></th>
 				</tr>
 				<tr>
 					<th class="text-center"><h3>Department: <xsl:value-of select="/discharge_card/institute_location/department"/></h3></th>
@@ -13,7 +15,7 @@
 		  <table class="table table-bordered">
 			<tr>
 				<th><h5 ><xsl:value-of select="/discharge_card/patient_demography/name"/></h5></th>
-				<th colspan="2"><h5 ><xsl:value-of select="/discharge_card/patient_demography/address"/></h5></th>
+				<th colspan="2"><h5 ><xsl:value-of disable-output-escaping="yes" select="/discharge_card/patient_demography/address"/></h5></th>
 				<th><h5 >DOB:<xsl:value-of select="/discharge_card/patient_demography/date_of_birth"/></h5></th>
 				<th><h5 >Age:<xsl:value-of select="/discharge_card/patient_demography/age/years"/> Yr <xsl:value-of select="/discharge_card/patient_demography/age/months"/> Mo</h5></th>
 			</tr>
@@ -25,17 +27,19 @@
 				<th><h5 >MLC:<xsl:value-of select="/discharge_card/patient_demography/mlc_case/number"/>/<xsl:value-of select="/discharge_card/patient_demography/mlc_case/date"/></h5></th>
 			</tr>
 			<tr>
-				<th ><h5>Admission: <xsl:value-of select="/discharge_card/patient_demography/date_of_admission"/></h5></th>
-				<th ><h5>Discharge: <xsl:value-of select="/discharge_card/patient_demography/date_of_discharge"/></h5></th>
-				<th ><h5>Database ID: <xsl:value-of select="/discharge_card/XML/ID"/></h5></th>
-				<th colspan="2" ><h5>XML Template: <xsl:value-of select="/discharge_card/XML/name"/></h5></th>
+				<th colspan="2"><h5>Admission: <xsl:value-of select="/discharge_card/patient_demography/date_of_admission"/></h5></th>
+				<th colspan="3"><h5>Discharge: <xsl:value-of select="/discharge_card/patient_demography/date_of_discharge"/></h5></th>
 			</tr>			
 			</table>
 			
 		  <table class="table table-bordered">
 			<tr><th colspan="10"><h3>Clinical Information</h3></th></tr>
 			<tr>
-				<th><h5 >Diagnosis:<xsl:value-of select="/discharge_card/clinical_information/diagnosis/text"/></h5></th>
+				<td><b>Diagnosis:</b><br/>
+				<xsl:call-template name="nl2br">
+					<xsl:with-param   name="string" select="/discharge_card/clinical_information/diagnosis/text"/>
+				</xsl:call-template>
+				</td>
 				<th><h5 >ICD:<xsl:value-of select="/discharge_card/clinical_information/diagnosis/icd"/></h5></th>
 			</tr>
 			<tr><th colspan="2"><h4>Presenting Complain</h4></th></tr>
@@ -92,4 +96,33 @@
 		  </table>	  		  
 		
   </xsl:template>
+  
+<xsl:template name="nl2br">
+	<xsl:param name="string"/>
+	<xsl:value-of select="normalize-space(substring-before($string,'&#10;'))"/>
+	<xsl:choose>
+		<xsl:when test="contains($string,'&#10;')">
+			<br />
+			<xsl:call-template name="nl2br">
+				<xsl:with-param name="string" select="substring-after($string,'&#10;')"/>
+			</xsl:call-template>
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:value-of select="$string"/>
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
+
 </xsl:stylesheet>
+
+
+<!--
+	Example:
+
+	<xsl:call-template name="nl2br">
+		<xsl:with-param name="string" select="body"/>
+	</xsl:call-template>
+-->
+
+

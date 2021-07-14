@@ -16,18 +16,26 @@ if($action=='print')
 	$ar=get_single_row($result);
 	$xml=simplexml_load_string($ar['xml']);
 
-	
 	$xslt = new xsltProcessor;
-	$sqlt='select xsl from xml_template where id=1';
+	$sqlt='select xsl from xml_template where id=\''.$ar['xml_template_id'].'\'';
 	$resultt=run_query($link,$GLOBALS['database'],$sqlt);
 	$art=get_single_row($resultt);
-	//$xslt->importStyleSheet(DomDocument::load('psychiatry.xsl'));
-	$xslt->importStyleSheet(simplexml_load_string($art['xsl']));
+	$xslt->importStyleSheet(DomDocument::load('psychiatry.xsl'));
+	//$xslt->importStyleSheet(simplexml_load_string($art['xsl']));
 		
 	print $xslt->transformToXML($xml);
+
+
+	$user_data=get_user_info($link,$_SESSION['login']);
+	echo 'Database ID: '.$_POST['id'].', Last Edited by:'.$user_data['name'].'('.$_SESSION['login'].') at '.$ar['recording_time'];
+	
 }
-
-
 ?>
 
+<style>
+.print_hide
+{
+	display:none;
+}
+</style>
 
