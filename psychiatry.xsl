@@ -15,7 +15,12 @@
 		  <table class="table table-bordered">
 			<tr>
 				<th><h5 ><xsl:value-of select="/discharge_card/patient_demography/name"/></h5></th>
-				<th colspan="2"><h5 ><xsl:value-of disable-output-escaping="yes" select="/discharge_card/patient_demography/address"/></h5></th>
+				<th colspan="2">
+					<h5>
+						<xsl:value-of disable-output-escaping="yes" select="/discharge_card/patient_demography/address"/>
+						(Ph:<xsl:value-of disable-output-escaping="yes" select="/discharge_card/patient_demography/phone"/>)
+					</h5>
+				</th>
 				<th><h5 >DOB:<xsl:value-of select="/discharge_card/patient_demography/date_of_birth"/></h5></th>
 				<th><h5 >Age:<xsl:value-of select="/discharge_card/patient_demography/age/years"/> Yr <xsl:value-of select="/discharge_card/patient_demography/age/months"/> Mo</h5></th>
 			</tr>
@@ -42,33 +47,48 @@
 				</td>
 				<th><h5 >ICD:<xsl:value-of select="/discharge_card/clinical_information/diagnosis/icd"/></h5></th>
 			</tr>
-			<tr><th colspan="2"><h4>Presenting Complain</h4></th></tr>
+			<tr><th colspan="3"><h4>Presenting Complain</h4></th></tr>
 			<tr>
-				<td colspan="2" ><xsl:value-of disable-output-escaping="yes" select="/discharge_card/clinical_information/summary/presenting_complain"/></td>
+				<td colspan="3" ><xsl:value-of disable-output-escaping="yes" select="/discharge_card/clinical_information/summary/presenting_complain"/></td>
 			</tr>
 			<tr>
-				<td><b>Past History: </b><xsl:value-of select="/discharge_card/clinical_information/summary/past_history"/></td>
+				<td colspan="2"><b>Past History: </b><xsl:value-of select="/discharge_card/clinical_information/summary/past_history"/></td>
 				<td><b>Family History: </b><xsl:value-of select="/discharge_card/clinical_information/summary/family_history"/></td>
 			</tr>						
 			<tr>
 				<td><b>Sunstance History: </b><xsl:value-of select="/discharge_card/clinical_information/summary/substance_history"/></td>
 				<td><b>Personal History: </b><xsl:value-of select="/discharge_card/clinical_information/summary/personal_history"/></td>
+				<td><b>Patient Management Problmes: </b><xsl:value-of select="/discharge_card/clinical_information/summary/patient_management_problems"/></td>
 			</tr>
+			</table>
+			<table  class="table table-bordered">
 			<tr>
 				<td>
 					<b>Mental Status Examination on admission: </b><xsl:value-of select="/discharge_card/clinical_information/mental_status_examination_on_admission"/>
-					<b>  Global Assessment of Functioning: </b><xsl:value-of select="/discharge_card/clinical_information/Global_Assessment_of_Functioning"/>
 				</td>
+                                <td>
+                                        <b>Mental Status Examination on discharge: </b><xsl:value-of select="/discharge_card/clinical_information/mental_status_examination_on_discharge"/>
+                                </td>
+			</tr>
+			<tr>
+
 				<td><b>Improvement Area: </b><xsl:value-of select="/discharge_card/clinical_information/improvement_area"/></td>
+				<td><b>Global Assesment of Functioning: </b><xsl:value-of select="/discharge_card/clinical_information/Global_Assessment_of_Functioning"/></td>
 			</tr>			
 		</table>
-				
+
+		  <table class="table table-bordered">
+			<tr><th colspan="10"><h3>Laboratory Investigations</h3></th></tr>
+			<tr>
+				<td><xsl:value-of select="/discharge_card/clinical_information/laboratory_investigations"/></td>			
+			</tr>
+		  </table>
 		  <table class="table table-bordered">
 			<tr><th colspan="10"><h3>Treatment Given</h3></th></tr>
 			<tr>
 				<td><b>Pharmacology:</b><xsl:value-of select="/discharge_card/treatment_given/pharmacology"/></td>
 				<td><b>Non Pharmacology:</b><xsl:value-of select="/discharge_card/treatment_given/non_pharmacology"/></td>
-				<td><b>ECT:</b><xsl:value-of select="/discharge_card/treatment_given/ect"/></td>
+				<td><b>ECT:</b><xsl:value-of select="/discharge_card/treatment_given/ECT"/></td>
 				<td><b>References:</b><xsl:value-of select="/discharge_card/treatment_given/references"/></td>
 			</tr>
 		  </table>

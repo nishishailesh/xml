@@ -22,13 +22,12 @@ if($action=='print')
 	$art=get_single_row($resultt);
 	$xslt->importStyleSheet(DomDocument::load('psychiatry.xsl'));
 	//$xslt->importStyleSheet(simplexml_load_string($art['xsl']));
-		
-	print $xslt->transformToXML($xml);
 
+	print $xslt->transformToXML($xml);
 
 	$user_data=get_user_info($link,$_SESSION['login']);
 	echo 'Database ID: '.$_POST['id'].', Last Edited by:'.$user_data['name'].'('.$_SESSION['login'].') at '.$ar['recording_time'];
-	
+
 }
 ?>
 

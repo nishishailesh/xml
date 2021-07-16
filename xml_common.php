@@ -369,7 +369,7 @@ function save($link,$post)
 				xml=\''.my_safe_string($link,$xml->asXML()).'\' ,
 				recorded_by=\''.$_SESSION['login'].'\' ,
 				recording_time=\''.strftime("%Y%m%d%H%M%S").'\' 
-				
+
 			where  id=\''.$post['id'].'\'';
 	return run_query($link,$GLOBALS['database'],$sql);
 }
