@@ -144,4 +144,24 @@ function rows_affected($link)
 {
 	return mysqli_affected_rows($link);
 }
+
+function get_authorization($link)
+{
+	$user=get_user_info($link,$_SESSION['login']);
+	return $auth=explode(',',$user['authorization']);
+}
+
+function is_authorized($link,$permission)
+{
+	$auth=get_authorization($link);
+	if(in_array($permission,$auth))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 ?>

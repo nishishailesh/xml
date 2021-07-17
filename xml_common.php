@@ -302,6 +302,7 @@ function append_meta($link,$id)
 
 function edit($link,$id)
 {
+	if(!is_authorized($link,'edit')){echo 'not authorized'; return false;}
 	$sql='select * from xml where id=\''.$id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);
@@ -335,6 +336,7 @@ function edit($link,$id)
 
 function view($link,$id)
 {
+	if(!is_authorized($link,'view')){echo 'not authorized'; return false;}
 	$sql='select * from xml where id=\''.$id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);

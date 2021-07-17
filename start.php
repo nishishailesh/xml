@@ -44,7 +44,7 @@ else if($action=='get_view_id')
 	
 }
 else if($action=='edit')
-{	
+{
 	edit($link,$_POST['id']);
 }
 else if($action=='view')
