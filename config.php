@@ -15,4 +15,6 @@ $GLOBALS['database']='pdc';
 $GLOBALS['class_name']=101;
 $GLOBALS['id_name']=101;
 
+$GLOBALS['grp']='';	//Just to ensure that it is defined always. Will be written by other scripts
+
 ?>

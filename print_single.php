@@ -20,8 +20,8 @@ if($action=='print')
 	$sqlt='select xsl from xml_template where id=\''.$ar['xml_template_id'].'\'';
 	$resultt=run_query($link,$GLOBALS['database'],$sqlt);
 	$art=get_single_row($resultt);
-	$xslt->importStyleSheet(DomDocument::load('psychiatry.xsl'));
-	//$xslt->importStyleSheet(simplexml_load_string($art['xsl']));
+	//$xslt->importStyleSheet(DomDocument::load('psychiatry.xsl'));
+	$xslt->importStyleSheet(simplexml_load_string($art['xsl']));
 
 	print $xslt->transformToXML($xml);
 
@@ -35,6 +35,16 @@ if($action=='print')
 .print_hide
 {
 	display:none;
+}
+
+*
+{
+	font-family: Fixed !important;
+}
+
+.pre
+{
+	border: 0px;
 }
 </style>
 

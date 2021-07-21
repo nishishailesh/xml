@@ -41,8 +41,7 @@ function display_leaf($name,$value,$html)
 		echo '<li><div class="two_column">
                 <div><b>'.$name.':</b></div>
                 <div>'.($value).'</div>
-            </div></li>';		
-		
+            </div></li>';
 	}
 }
 //<div>'.nl2br($value).'</div>
@@ -278,7 +277,21 @@ function insert_template($link,$template_id)
 	$t_sql='select * from xml_template where id=\''.$template_id.'\'';
 	$t_result=run_query($link,$GLOBALS['database'],$t_sql);
 	$ar=get_single_row($t_result);
-	$sql='insert into xml (xml_template_id, xml) values(\''.$template_id.'\' , \''.my_safe_string($link,$ar['xml']).'\')';
+	$sql='insert into xml 
+						(	xml_template_id, 
+							xml,
+							recorded_by,
+							recording_time
+						) 
+						values	
+						(
+							\''.$template_id.'\' , 
+							\''.my_safe_string($link,$ar['xml']).'\' ,
+							\''.$_SESSION['login'].'\' ,
+							\''.strftime("%Y%m%d%H%M%S").'\' 
+						)';
+
+	
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$id=last_autoincrement_insert($link);
 	//append_meta($link,$id);
@@ -302,6 +315,7 @@ function append_meta($link,$id)
 
 function edit($link,$id)
 {
+	if(!is_authorized($link,'edit')){echo 'not authorized';return false;}
 	$sql='select * from xml where id=\''.$id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);
@@ -331,10 +345,61 @@ function edit($link,$id)
 	echo '</form>';
 }
 
-
-
 function view($link,$id)
 {
+	//if(!is_authorized($link,'view')){echo 'not authorized';return false;}
+	
+	$acl=(array)get_acl($link,$GLOBALS['database'],'xml','acl','id',$id);
+	echo '<pre>ACL:';print_r($acl);echo '</pre>';
+	echo '<pre>GROUP:';print_r($GLOBALS['grp']);echo '</pre>';
+	
+	$ret=false;
+	
+	if(array_key_exists($_SESSION['login'],$acl))
+	{
+		//echo 'yessss:'.$acl[$_SESSION['login']];
+		//strpos return position or false
+		if(strpos($acl[$_SESSION['login']],'r')!==false)
+		{
+			echo 'permitted because you are allowed user:'.$_SESSION['login'].'<br>';
+			$ret=true;
+		}
+	}
+	echo 'not permitted as user:'.$_SESSION['login'].'<br>';
+
+	if($ret==false)
+	{
+		foreach($GLOBALS['grp'] as $k=>$v)
+		{
+			echo 'User belong to group:('.$k.'===>'.$v.')<br>';
+			
+			if(in_array($v,array_keys($acl)))
+			{
+				echo 'your group '.$v.' have entry in acl list<br>';
+
+				if(isset($acl[$v]))
+				{
+					if(strpos($acl[$v],'r')!==false)
+					{
+						echo 'your group '.$v.' have entry in acl list and this group have "'.$acl[$v].'" permission. <br>Success<br>';
+						$ret=true;
+						break;		//go ahead
+					}
+					else
+					{
+						echo 'next try..<br>';
+					}
+				}
+			}
+			else
+			{
+				echo 'no entry for this group in acl<br>';
+			}
+		}
+	}	
+	
+	if ($ret===false){echo 'not authorized<br>';return false;}
+
 	$sql='select * from xml where id=\''.$id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);
@@ -385,6 +450,7 @@ function show_search_form($link)
 	echo '<div class=two_column>';
 	while($ar=get_single_row($result))
 	{
+		//print_r($ar);
 		echo '<label for=\'xpath_'.$ar['id'].'\'>' .$ar['search_path']. '</label>';
 		echo '<input type=text id=\'xpath_'.$ar['id'].'\' name=\'xpath_'.$ar['id'].'\'>';
 	}
@@ -548,6 +614,16 @@ function get_id_data($link,$id,$xpath_array)
 	return $ret;
 }
 
+
+function get_acl($link,$db,$table,$field,$one_field_primary_key,$one_field_primary_value)
+{
+	
+	$sql='select `'.$field.'` from `'.$table.'` where `'.$one_field_primary_key.'` = \''.$one_field_primary_value.'\'';
+	$result=run_query($link,$db,$sql);
+	$ar=get_single_row($result);
+	$acl=json_decode($ar['acl']);
+	return $acl;
+}
 
 ?>
 <style>
