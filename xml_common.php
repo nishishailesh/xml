@@ -277,18 +277,22 @@ function insert_template($link,$template_id)
 	$t_sql='select * from xml_template where id=\''.$template_id.'\'';
 	$t_result=run_query($link,$GLOBALS['database'],$t_sql);
 	$ar=get_single_row($t_result);
+	$json_str='{"'.$_SESSION['login'].'":"ru"}';
+	echo $json_str.'<br>';
 	$sql='insert into xml 
 						(	xml_template_id, 
 							xml,
 							recorded_by,
-							recording_time
+							recording_time,
+							acl
 						) 
 						values	
 						(
 							\''.$template_id.'\' , 
 							\''.my_safe_string($link,$ar['xml']).'\' ,
 							\''.$_SESSION['login'].'\' ,
-							\''.strftime("%Y%m%d%H%M%S").'\' 
+							\''.strftime("%Y%m%d%H%M%S").'\' ,
+							\''.$json_str.'\' 
 						)';
 
 	
@@ -569,9 +573,12 @@ function get_acl($link,$db,$table,$field,$one_field_primary_key,$one_field_prima
 {
 	
 	$sql='select `'.$field.'` from `'.$table.'` where `'.$one_field_primary_key.'` = \''.$one_field_primary_value.'\'';
+	//echo $sql.'<br>';
 	$result=run_query($link,$db,$sql);
 	$ar=get_single_row($result);
+	//echo 'x';print_r($ar);echo 'y';
 	$acl=json_decode($ar['acl']);
+	//echo 'x';print_r($acl);echo 'y';
 	return $acl;
 }
 
@@ -592,9 +599,10 @@ function is_permitted($link,$db,$table,$field,$id_fname,$id,$permission_type)
 	{
 		//echo 'yessss:'.$acl[$_SESSION['login']];
 		//strpos return position or false
+		echo 'ACL entry for user:'.$_SESSION['login'].' found<br>';
 		if(strpos($acl[$_SESSION['login']],$permission_type)!==false)
 		{
-			echo 'permitted because you are allowed user:'.$_SESSION['login'].'<br>';
+			echo 'permitted because you are allowed as user:'.$_SESSION['login'].' and have "'.$permission_type.'" permission. <br>Success<br>';
 			$ret=true;
 		}
 		else
