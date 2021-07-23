@@ -366,6 +366,7 @@ function view($link,$id)
 	echo '<div class=bg-warning>
 				<h2 class="d-inline">'.$xml->getName().':<input type=text size=10 readonly name=id value=\''.$id.'\'></h2>';
 				echo '<input  class="btn btn-sm btn-secondary m-1 print_hide" type=submit name=action value=edit>';
+				echo '<input  formaction=permission.php formtarget=_blank class="btn btn-sm btn-secondary m-1 print_hide" type=submit name=action value=permission>';
 				echo '<button  formaction=print_single.php formtarget=_blank class="btn btn-sm btn-secondary m-1 print_hide"  type=submit name=action value=print>print</button>';
 				echo 'Last Edited by:'.$user_data['name'].'('.$_SESSION['login'].') at '.$ar['recording_time'];
 				
@@ -446,6 +447,7 @@ function find_search_result($link,$post)
 			$result=run_query($link,$GLOBALS['database'],$sql);
 			while($ar=get_single_row($result))
 			{
+				libxml_use_internal_errors(true); // to suppress warning due to bad xml tags
 				$xml=simplexml_load_string($ar['xml']);
 				if(!$xml){continue;}
 				$xpath=get_xpath($link,$search_id);
