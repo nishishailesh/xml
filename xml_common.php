@@ -315,7 +315,8 @@ function append_meta($link,$id)
 
 function edit($link,$id)
 {
-	if(!is_authorized($link,'edit')){echo 'not authorized';return false;}
+	//if(!is_authorized($link,'edit')){echo 'not authorized';return false;}
+	if(!is_permitted($link,$GLOBALS['database'],'xml','acl','id',$id,'u')){echo 'not authorized';return false;}
 	$sql='select * from xml where id=\''.$id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);
@@ -347,58 +348,7 @@ function edit($link,$id)
 
 function view($link,$id)
 {
-	//if(!is_authorized($link,'view')){echo 'not authorized';return false;}
-	
-	$acl=(array)get_acl($link,$GLOBALS['database'],'xml','acl','id',$id);
-	echo '<pre>ACL:';print_r($acl);echo '</pre>';
-	echo '<pre>GROUP:';print_r($GLOBALS['grp']);echo '</pre>';
-	
-	$ret=false;
-	
-	if(array_key_exists($_SESSION['login'],$acl))
-	{
-		//echo 'yessss:'.$acl[$_SESSION['login']];
-		//strpos return position or false
-		if(strpos($acl[$_SESSION['login']],'r')!==false)
-		{
-			echo 'permitted because you are allowed user:'.$_SESSION['login'].'<br>';
-			$ret=true;
-		}
-	}
-	echo 'not permitted as user:'.$_SESSION['login'].'<br>';
-
-	if($ret==false)
-	{
-		foreach($GLOBALS['grp'] as $k=>$v)
-		{
-			echo 'User belong to group:('.$k.'===>'.$v.')<br>';
-			
-			if(in_array($v,array_keys($acl)))
-			{
-				echo 'your group '.$v.' have entry in acl list<br>';
-
-				if(isset($acl[$v]))
-				{
-					if(strpos($acl[$v],'r')!==false)
-					{
-						echo 'your group '.$v.' have entry in acl list and this group have "'.$acl[$v].'" permission. <br>Success<br>';
-						$ret=true;
-						break;		//go ahead
-					}
-					else
-					{
-						echo 'next try..<br>';
-					}
-				}
-			}
-			else
-			{
-				echo 'no entry for this group in acl<br>';
-			}
-		}
-	}	
-	
-	if ($ret===false){echo 'not authorized<br>';return false;}
+	if(!is_permitted($link,$GLOBALS['database'],'xml','acl','id',$id,'r')){echo 'not authorized';return false;}
 
 	$sql='select * from xml where id=\''.$id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
@@ -623,6 +573,73 @@ function get_acl($link,$db,$table,$field,$one_field_primary_key,$one_field_prima
 	$ar=get_single_row($result);
 	$acl=json_decode($ar['acl']);
 	return $acl;
+}
+
+
+
+
+function is_permitted($link,$db,$table,$field,$id_fname,$id,$permission_type)
+{
+	echo 'is_permitted('.$permission_type.')<br>';
+	//$acl=(array)get_acl($link,$GLOBALS['database'],'xml','acl','id',$id);
+	$acl=(array)get_acl($link,$db,$table,$field,$id_fname,$id);
+	echo '<pre>ACL:';print_r($acl);echo '</pre>';
+	echo '<pre>GROUP:';print_r($GLOBALS['grp']);echo '</pre>';
+	
+	$ret=false;
+	
+	if(array_key_exists($_SESSION['login'],$acl))
+	{
+		//echo 'yessss:'.$acl[$_SESSION['login']];
+		//strpos return position or false
+		if(strpos($acl[$_SESSION['login']],$permission_type)!==false)
+		{
+			echo 'permitted because you are allowed user:'.$_SESSION['login'].'<br>';
+			$ret=true;
+		}
+		else
+		{
+			echo 'not permitted as user:'.$_SESSION['login'].'<br>';
+		}
+	}
+	else
+	{
+		echo 'no ACL entry for user:'.$_SESSION['login'].'<br>';
+	}
+	
+	if($ret==false)
+	{
+		foreach($GLOBALS['grp'] as $k=>$v)
+		{
+			echo 'User belong to group:('.$k.'===>'.$v.')<br>';
+			
+			if(in_array($v,array_keys($acl)))
+			{
+				echo 'your group '.$v.' have entry in acl list<br>';
+
+				if(isset($acl[$v]))
+				{
+					if(strpos($acl[$v],$permission_type)!==false)
+					{
+						echo 'your group '.$v.' have entry in acl list and this group have "'.$permission_type.'" permission. <br>Success<br>';
+						$ret=true;
+						break;		//go ahead
+					}
+					else
+					{
+						echo 'your group '.$v.' have entry in acl list but, this group DONOT have "'.$permission_type.'" permission. <br>Falied<br>';
+					}
+				}
+			}
+			else
+			{
+				echo 'no entry for this group in acl<br>';
+			}
+		}
+	}	
+	
+	if ($ret===false){echo 'not authorized<br>';}
+	return $ret;
 }
 
 ?>

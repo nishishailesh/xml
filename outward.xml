@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<outward>
+  <from><department>Psychiatry</department><name>Government Medical College and New Civil Hospital</name><address>Majura Gate, Surat</address><phone>0261-2208421, 2208521</phone></from>
+  <to type="select" source="table" table="outward_to" field="name"></to>
+  <subject>
+  
+  </subject>
+	<say></say>
+<description></description>
+<thanks></Thanks>
+<Signature>
+<name></name>
+<post></post>
+<department></department>
+</Signature>
+<post_script></post_script>
+</outward>
