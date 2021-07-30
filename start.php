@@ -8,7 +8,7 @@ $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 $GLOBALS['grp']=get_group($link);
 //echo '<pre>';print_r($grp);echo '</pre>';
 
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 $action=isset($_POST['action'])?$_POST['action']:'';
 //echo 'action='.$action;
 main_menu();
@@ -21,7 +21,11 @@ if($action=='new')
 if($action=='select_template')
 {
 	$inserted_id=insert_template($link,$_POST['xml_template_type']);
-	edit($link,$inserted_id);
+	echo 'inserted id==>'.$inserted_id.'<==<br>';
+	if($inserted_id!==false)
+	{
+		edit($link,$inserted_id);
+	}
 }
 else if($action=='get_edit_id')
 {
@@ -52,7 +56,6 @@ else if($action=='edit')
 }
 else if($action=='view')
 {
-
 	view($link,$_POST['id']);
 }
 else if($action=='save')

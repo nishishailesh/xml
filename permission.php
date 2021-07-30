@@ -13,8 +13,6 @@ $GLOBALS['grp']=get_group($link);
 
 if($action=='permission')
 {
-	
-
 	echo '<h3>Set Permissions for Groups / Users for record : '.$_POST['id'].'</h3>';
 	echo '<div class=two_column_auto>';
 		echo '<div class="border border-warning">';

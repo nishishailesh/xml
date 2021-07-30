@@ -255,8 +255,6 @@ function main_menu()
 	</form>';
 }
 
-
-
 function show_templates($link)
 {
 	$sql='select * from xml_template';
@@ -274,6 +272,8 @@ function show_templates($link)
 
 function insert_template($link,$template_id)
 {
+	if(!is_permitted($link,$GLOBALS['database'],'xml_template','acl','id',$template_id,'i')){return false;}
+	
 	$t_sql='select * from xml_template where id=\''.$template_id.'\'';
 	$t_result=run_query($link,$GLOBALS['database'],$t_sql);
 	$ar=get_single_row($t_result);
@@ -295,7 +295,6 @@ function insert_template($link,$template_id)
 							\''.$json_str.'\' 
 						)';
 
-	
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$id=last_autoincrement_insert($link);
 	//append_meta($link,$id);
