@@ -223,7 +223,7 @@ function is_permitted($link,$db,$table,$field,$id_fname,$id,$permission_type,$us
 		}
 		else
 		{
-			echo 'not permitted as user:'.$user.'<br>';
+			echo 'not permitted as user:'.$user.' for "'.$permission_type.'" permission. <br>';
 		}
 	}
 	else

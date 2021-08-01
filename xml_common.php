@@ -277,8 +277,10 @@ function insert_template($link,$template_id,$user)
 	$t_sql='select * from xml_template where id=\''.$template_id.'\'';
 	$t_result=run_query($link,$GLOBALS['database'],$t_sql);
 	$ar=get_single_row($t_result);
-	$json_str='{"'.$user.'":"ru"}';
-	echo $json_str.'<br>';
+	//$json_str='{"'.$user.'":"ru"}';
+	//creater is permitted for read,update and set permission
+	$json_str='{"'.$user.'":"rup"}';
+	//echo $json_str.'<br>';
 	$sql='insert into xml 
 						(	xml_template_id, 
 							xml,
