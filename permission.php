@@ -5,7 +5,7 @@ require_once 'xml_common.php';
 ///////User code below/////////////////////
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //echo '<pre>';print_r($_POST);echo '</pre>';
-//$GLOBALS['per_style']='';//blank=display, undefined=hidden
+//$GLOBALS['per_style']='';//blank/defined=display, undefined=hidden
 
 $action=isset($_POST['action'])?$_POST['action']:'';
 
@@ -13,15 +13,23 @@ $action=isset($_POST['action'])?$_POST['action']:'';
 
 if($action=='save_permission')
 {
-	$permission_array=save_permission($link,$_POST['id'],$_POST,$_SESSION['login']);
-	print_r($permission_array);
-	$permission_json=json_encode($permission_array);
-	echo $permission_json;
-	$sql='update xml	set
-							acl=\''.$permission_json.'\'
-						where id=\''.$_POST['id'].'\'';
-	$result=run_query($link,$GLOBALS['database'],$sql);
-	echo 'updated '.rows_affected($link).' row(s)<br>';
+	if(!$permission_array=save_permission($link,$_POST['id'],$_POST,$_SESSION['login']))
+	{
+			//echo 'not authorised to save permissions<br>';
+	}
+	else
+	{
+		//echo '<h2>permission_arrray:';print_r($permission_array);echo '</h2>';
+		
+		$permission_json=json_encode($permission_array);
+		//echo '<h2>'.$permission_json.'</h2>';
+
+		$sql='update xml	set
+								acl=\''.$permission_json.'\'
+							where id=\''.$_POST['id'].'\'';
+		$result=run_query($link,$GLOBALS['database'],$sql);
+		echo 'updated '.rows_affected($link).' row(s)<br>';
+	}
 }
 
 if($action=='permission' || $action=='save_permission')
@@ -45,9 +53,9 @@ if($action=='permission' || $action=='save_permission')
 
 function manage_group($link,$id)
 {
-	$acl=(array)get_acl($link,$GLOBALS['database'],'xml','acl','id',$id);
+	$acl=get_acl($link,$GLOBALS['database'],'xml','acl','id',$id);
 	//echo '<pre>ACL:';print_r($acl);echo '</pre>';
-
+	if(!is_array($acl)){$acl=array();}
 	$sql='select * from user_group';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
@@ -61,7 +69,7 @@ function manage_group($link,$id)
 		$ucheck='';
 		$pcheck='';
 		
-		if(in_array($ar['user_group'],array_keys($acl)))
+		if(in_array($ar['user_group'],array_keys($acl),true))
 		{
 			if(strpos($acl[$ar['user_group']],'r')!==false){$rcheck='checked';}
 			if(strpos($acl[$ar['user_group']],'u')!==false){$ucheck='checked';}			
@@ -82,8 +90,9 @@ function manage_group($link,$id)
 
 function manage_user($link,$id)
 {
-	$acl=(array)get_acl($link,$GLOBALS['database'],'xml','acl','id',$id);
+	$acl= get_acl($link,$GLOBALS['database'],'xml','acl','id',$id);
 	//echo '<pre>ACL:';print_r($acl);echo '</pre>';
+	if(!is_array($acl)){$acl=array();}
 
 
 	$sql='select * from user';
@@ -144,7 +153,8 @@ function save_permission($link,$id,$post,$user)
 	*/
 	
 	//check if permitted to change permissions
-	if(!is_permitted($link,$GLOBALS['database'],'xml','acl','id',$id,'p',$user)){echo 'not authorized';return false;}
+	if(!is_permitted($link,$GLOBALS['database'],'xml','acl','id',$id,'p',$user)){echo 'not authorized to save permissions<br>';return false;}
+	
 	$permission=array();
 	//echo '<pre>';
 	foreach($post as $k=>$v)

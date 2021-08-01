@@ -188,9 +188,7 @@ function get_acl($link,$db,$table,$field,$one_field_primary_key,$one_field_prima
 	//echo $sql.'<br>';
 	$result=run_query($link,$db,$sql);
 	$ar=get_single_row($result);
-	//echo 'x';print_r($ar);echo 'y';
-	$acl=json_decode($ar['acl']);
-	//echo 'x';print_r($acl);echo 'y';
+	$acl=json_decode($ar['acl'],true);
 	return $acl;
 }
 
@@ -203,7 +201,7 @@ function is_permitted($link,$db,$table,$field,$id_fname,$id,$permission_type,$us
 	echo '<div '.$this_style.'>';
 	echo 'is_permitted('.$permission_type.')<br>';
 	//$acl=(array)get_acl($link,$GLOBALS['database'],'xml','acl','id',$id);
-	$acl=(array)get_acl($link,$db,$table,$field,$id_fname,$id);
+	$acl=get_acl($link,$db,$table,$field,$id_fname,$id);
 	$grp=get_group($link,$user);
 	
 	echo '<pre>ACL:';print_r($acl);echo '</pre>';
