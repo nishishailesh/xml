@@ -5,14 +5,15 @@ require_once 'xml_common.php';
 
 ///////User code below/////////////////////
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
-$GLOBALS['grp']=get_group($link);
 //echo '<pre>';print_r($grp);echo '</pre>';
 
-echo '<pre>';print_r($_POST);echo '</pre>';
+//$GLOBALS['per_style']='';//blank=display, undefined=hidden
+
+//echo '<pre>';print_r($_POST);echo '</pre>';
 $action=isset($_POST['action'])?$_POST['action']:'';
 //echo 'action='.$action;
 main_menu();
-
+$user=$_SESSION['login'];
 
 if($action=='new')
 {
@@ -20,11 +21,11 @@ if($action=='new')
 }
 if($action=='select_template')
 {
-	$inserted_id=insert_template($link,$_POST['xml_template_type']);
+	$inserted_id=insert_template($link,$_POST['xml_template_type'],$user);
 	echo 'inserted id==>'.$inserted_id.'<==<br>';
 	if($inserted_id!==false)
 	{
-		edit($link,$inserted_id);
+		edit($link,$inserted_id,$user);
 	}
 }
 else if($action=='get_edit_id')
@@ -52,11 +53,11 @@ else if($action=='get_view_id')
 }
 else if($action=='edit')
 {	
-	edit($link,$_POST['id']);
+	edit($link,$_POST['id'],$user);
 }
 else if($action=='view')
 {
-	view($link,$_POST['id']);
+	view($link,$_POST['id'],$user);
 }
 else if($action=='save')
 {
@@ -68,7 +69,7 @@ else if($action=='save')
 	{
 			echo 'failed to saved at'.strftime("%Y-%m-%d %H:%M:%S").'<br>';
 	};
-	edit($link,$_POST['id']);
+	edit($link,$_POST['id'],$user);
 }
 else if($action=='get_search')
 {
@@ -82,7 +83,7 @@ else if($action=='show_search_result')
 }
 else if($action=='view_single')
 {
-	view($link,$_POST['id']);
+	view($link,$_POST['id'],$user);
 }
 
 tail();

@@ -140,6 +140,7 @@ function get_row_count($result)
 }
 ////////////////////////////////////////
 
+//////authorization based control/////////
 function rows_affected($link)
 {
 	return mysqli_affected_rows($link);
@@ -166,11 +167,104 @@ function is_authorized($link,$permission)
 }
 
 
-
-function get_group($link)
+/////// much better ACL////////////
+//user table must have field called group (group is also a mysql keyword, so used carefully in statement
+//user groups are comma seperated values
+//uses session variable login
+function get_group($link,$user_id)
 {
-	$user=get_user_info($link,$_SESSION['login']);
+	$user=get_user_info($link,$user_id);
 	return $auth=explode(',',$user['group']);
+}
+
+
+///data table must have a field for acl
+//it is a json string {"x":"y","a":"b"}
+//first key-part of json data is group. second value-part is type of permission defined as single letter. e.g "ru" mean read and update
+function get_acl($link,$db,$table,$field,$one_field_primary_key,$one_field_primary_value)
+{
+	
+	$sql='select `'.$field.'` from `'.$table.'` where `'.$one_field_primary_key.'` = \''.$one_field_primary_value.'\'';
+	//echo $sql.'<br>';
+	$result=run_query($link,$db,$sql);
+	$ar=get_single_row($result);
+	//echo 'x';print_r($ar);echo 'y';
+	$acl=json_decode($ar['acl']);
+	//echo 'x';print_r($acl);echo 'y';
+	return $acl;
+}
+
+///checks user id and groups with possible entry in ACL fields
+//returns false if not permitted
+function is_permitted($link,$db,$table,$field,$id_fname,$id,$permission_type,$user)
+{
+	$this_style=isset($GLOBALS['per_style'])?$GLOBALS['per_style']:'style="display:none"';
+	
+	echo '<div '.$this_style.'>';
+	echo 'is_permitted('.$permission_type.')<br>';
+	//$acl=(array)get_acl($link,$GLOBALS['database'],'xml','acl','id',$id);
+	$acl=(array)get_acl($link,$db,$table,$field,$id_fname,$id);
+	$grp=get_group($link,$user);
+	
+	echo '<pre>ACL:';print_r($acl);echo '</pre>';
+	echo '<pre>GROUP:';print_r($grp);echo '</pre>';
+	
+	$ret=false;
+	
+	if(array_key_exists($user,$acl))
+	{
+		//echo 'yessss:'.$acl[$_SESSION['login']];
+		//strpos return position or false
+		echo 'ACL entry for user:'.$user.' found<br>';
+		if(strpos($acl[$user],$permission_type)!==false)
+		{
+			echo 'permitted because you are allowed as user:'.$user.' and have "'.$permission_type.'" permission. <br>Success<br>';
+			$ret=true;
+		}
+		else
+		{
+			echo 'not permitted as user:'.$user.'<br>';
+		}
+	}
+	else
+	{
+		echo 'no ACL entry for user:'.$user.'<br>';
+	}
+	
+	if($ret==false)
+	{
+		foreach($grp as $k=>$v)
+		{
+			echo 'User belong to group:('.$k.'===>'.$v.')<br>';
+			
+			if(in_array($v,array_keys($acl)))
+			{
+				echo 'your group '.$v.' have entry in acl list<br>';
+
+				if(isset($acl[$v]))
+				{
+					if(strpos($acl[$v],$permission_type)!==false)
+					{
+						echo 'your group '.$v.' have entry in acl list and this group have "'.$permission_type.'" permission. <br>Success<br>';
+						$ret=true;
+						break;		//go ahead
+					}
+					else
+					{
+						echo 'your group '.$v.' have entry in acl list but, this group DONOT have "'.$permission_type.'" permission. <br>Falied<br>';
+					}
+				}
+			}
+			else
+			{
+				echo 'no entry for this group in acl<br>';
+			}
+		}
+	}	
+	
+	if ($ret===false){echo 'not authorized<br>';}
+	echo '</div>';
+	return $ret;
 }
 
 ?>

@@ -270,14 +270,14 @@ function show_templates($link)
 	echo '</form>';
 }
 
-function insert_template($link,$template_id)
+function insert_template($link,$template_id,$user)
 {
-	if(!is_permitted($link,$GLOBALS['database'],'xml_template','acl','id',$template_id,'i')){return false;}
+	if(!is_permitted($link,$GLOBALS['database'],'xml_template','acl','id',$template_id,'i',$user)){return false;}
 	
 	$t_sql='select * from xml_template where id=\''.$template_id.'\'';
 	$t_result=run_query($link,$GLOBALS['database'],$t_sql);
 	$ar=get_single_row($t_result);
-	$json_str='{"'.$_SESSION['login'].'":"ru"}';
+	$json_str='{"'.$user.'":"ru"}';
 	echo $json_str.'<br>';
 	$sql='insert into xml 
 						(	xml_template_id, 
@@ -316,10 +316,10 @@ function append_meta($link,$id)
 	run_query($link,$GLOBALS['database'],$sql);	
 }
 
-function edit($link,$id)
+function edit($link,$id,$user)
 {
 	//if(!is_authorized($link,'edit')){echo 'not authorized';return false;}
-	if(!is_permitted($link,$GLOBALS['database'],'xml','acl','id',$id,'u')){echo 'not authorized';return false;}
+	if(!is_permitted($link,$GLOBALS['database'],'xml','acl','id',$id,'u',$user)){echo 'not authorized';return false;}
 	$sql='select * from xml where id=\''.$id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
 	$ar=get_single_row($result);
@@ -349,9 +349,9 @@ function edit($link,$id)
 	echo '</form>';
 }
 
-function view($link,$id)
+function view($link,$id,$user)
 {
-	if(!is_permitted($link,$GLOBALS['database'],'xml','acl','id',$id,'r')){echo 'not authorized';return false;}
+	if(!is_permitted($link,$GLOBALS['database'],'xml','acl','id',$id,'r',$user)){echo 'not authorized';return false;}
 
 	$sql='select * from xml where id=\''.$id.'\'';
 	$result=run_query($link,$GLOBALS['database'],$sql);
@@ -566,88 +566,6 @@ function get_id_data($link,$id,$xpath_array)
 		}
 	}	
 	//print_r($ret);
-	return $ret;
-}
-
-
-function get_acl($link,$db,$table,$field,$one_field_primary_key,$one_field_primary_value)
-{
-	
-	$sql='select `'.$field.'` from `'.$table.'` where `'.$one_field_primary_key.'` = \''.$one_field_primary_value.'\'';
-	//echo $sql.'<br>';
-	$result=run_query($link,$db,$sql);
-	$ar=get_single_row($result);
-	//echo 'x';print_r($ar);echo 'y';
-	$acl=json_decode($ar['acl']);
-	//echo 'x';print_r($acl);echo 'y';
-	return $acl;
-}
-
-
-
-
-function is_permitted($link,$db,$table,$field,$id_fname,$id,$permission_type)
-{
-	echo 'is_permitted('.$permission_type.')<br>';
-	//$acl=(array)get_acl($link,$GLOBALS['database'],'xml','acl','id',$id);
-	$acl=(array)get_acl($link,$db,$table,$field,$id_fname,$id);
-	echo '<pre>ACL:';print_r($acl);echo '</pre>';
-	echo '<pre>GROUP:';print_r($GLOBALS['grp']);echo '</pre>';
-	
-	$ret=false;
-	
-	if(array_key_exists($_SESSION['login'],$acl))
-	{
-		//echo 'yessss:'.$acl[$_SESSION['login']];
-		//strpos return position or false
-		echo 'ACL entry for user:'.$_SESSION['login'].' found<br>';
-		if(strpos($acl[$_SESSION['login']],$permission_type)!==false)
-		{
-			echo 'permitted because you are allowed as user:'.$_SESSION['login'].' and have "'.$permission_type.'" permission. <br>Success<br>';
-			$ret=true;
-		}
-		else
-		{
-			echo 'not permitted as user:'.$_SESSION['login'].'<br>';
-		}
-	}
-	else
-	{
-		echo 'no ACL entry for user:'.$_SESSION['login'].'<br>';
-	}
-	
-	if($ret==false)
-	{
-		foreach($GLOBALS['grp'] as $k=>$v)
-		{
-			echo 'User belong to group:('.$k.'===>'.$v.')<br>';
-			
-			if(in_array($v,array_keys($acl)))
-			{
-				echo 'your group '.$v.' have entry in acl list<br>';
-
-				if(isset($acl[$v]))
-				{
-					if(strpos($acl[$v],$permission_type)!==false)
-					{
-						echo 'your group '.$v.' have entry in acl list and this group have "'.$permission_type.'" permission. <br>Success<br>';
-						$ret=true;
-						break;		//go ahead
-					}
-					else
-					{
-						echo 'your group '.$v.' have entry in acl list but, this group DONOT have "'.$permission_type.'" permission. <br>Falied<br>';
-					}
-				}
-			}
-			else
-			{
-				echo 'no entry for this group in acl<br>';
-			}
-		}
-	}	
-	
-	if ($ret===false){echo 'not authorized<br>';}
 	return $ret;
 }
 
