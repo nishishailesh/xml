@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <outward>
-  <from><department>Psychiatry</department><name>Government Medical College and New Civil Hospital</name><address>Majura Gate, Surat</address><phone>0261-2208421, 2208521</phone></from>
-  <to type="select" source="table" table="outward_to" field="name"></to>
-  <subject>
-  
-  </subject>
-	<say></say>
-<description></description>
-<thanks></Thanks>
-<Signature>
-<name></name>
-<post></post>
-<department></department>
-</Signature>
-<post_script></post_script>
+	<sender>
+		<department>Biochemistry</department>
+		<name>Government Medical College and New Civil Hospital</name>
+		<address>Majura Gate, Surat</address>
+		<phone>0261-2208317, 0261-2208366</phone>
+	</sender>
+	<recipient type="select" source="table" table="outward_to" field="name"></recipient>
+	<subject/>
+	<greeting>Sir/Madam</greeting>
+	<description type="textarea" html="tiny"></description>
+	<signature>
+		<initials></initials>
+		<name></name>
+		<post>Professor and Head</post>
+		<department>Biochemistry</department>
+		<institute>Government Medical College, Surat</institute>
+	</signature>
+	<submitted_through>Proper channel</submitted_through>
+	<forwarded_to type="textarea" html="tiny"></forwarded_to>
 </outward>

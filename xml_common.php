@@ -413,9 +413,9 @@ echo '
 	tinyMCE.init({
 			mode : "specific_textareas",
 			editor_selector : "tiny",
-			plugins: "table",
+			plugins: "table,lists",
 			menubar : "false",
-			toolbar: "table undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent"
+			toolbar: "table undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent|numlist bullist"
 			})
 </script>';
 	
