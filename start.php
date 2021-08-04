@@ -7,10 +7,11 @@ require_once 'xml_common.php';
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
 //echo '<pre>';print_r($grp);echo '</pre>';
 
-//$GLOBALS['per_style']='';//blank=display, undefined=hidden
+//$GLOBALS['per_style']='';//if defined=display, undefined=hidden
 
 //echo '<pre>';print_r($_POST);echo '</pre>';
 $action=isset($_POST['action'])?$_POST['action']:'';
+
 //echo 'action='.$action;
 main_menu();
 $user=$_SESSION['login'];
@@ -26,6 +27,10 @@ if($action=='select_template')
 	if($inserted_id!==false)
 	{
 		edit($link,$inserted_id,$user);
+	}
+	else
+	{
+		echo 'New data creation falied. Insufficient permissions?<br>';
 	}
 }
 else if($action=='get_edit_id')

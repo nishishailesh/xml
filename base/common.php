@@ -173,7 +173,7 @@ function is_authorized($link,$permission)
 //uses session variable login
 function get_group($link,$user_id)
 {
-	$user=get_user_info($link,$user_id);
+	$user=get_user_info($link,$user_id);	//uses user_database, donot confuse with database . see config.php GLOBALS
 	return $auth=explode(',',$user['group']);
 }
 
@@ -202,7 +202,7 @@ function is_permitted($link,$db,$table,$field,$id_fname,$id,$permission_type,$us
 	echo 'is_permitted('.$permission_type.')<br>';
 	//$acl=(array)get_acl($link,$GLOBALS['database'],'xml','acl','id',$id);
 	$acl=get_acl($link,$db,$table,$field,$id_fname,$id);
-	$grp=get_group($link,$user);
+	$grp=get_group($link,$user); //from user_database
 	
 	echo '<pre>ACL:';print_r($acl);echo '</pre>';
 	echo '<pre>GROUP:';print_r($grp);echo '</pre>';
@@ -265,4 +265,11 @@ function is_permitted($link,$db,$table,$field,$id_fname,$id,$permission_type,$us
 	return $ret;
 }
 
+//user_database is different from database
+function get_user_info($link,$user)
+{
+	$sql='select * from user where user=\''.$user.'\'';
+	$result=run_query($link,$GLOBALS['user_database'],$sql);
+	return get_single_row($result);
+}
 ?>

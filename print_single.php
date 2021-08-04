@@ -46,5 +46,7 @@ if($action=='print')
 {
 	border: 0px;
 }
+
+
 </style>
 

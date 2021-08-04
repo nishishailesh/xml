@@ -1,10 +1,12 @@
 <?php
 //$GLOBALS['nojunk']='';
+//echo '<pre>';print_r($_POST);echo '</pre>';
+
 require_once 'base/verify_login.php';
 require_once 'xml_common.php';
 ///////User code below/////////////////////
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
-//echo '<pre>';print_r($_POST);echo '</pre>';
+echo '<pre>';print_r($_POST);echo '</pre>';
 //$GLOBALS['per_style']='';//blank/defined=display, undefined=hidden
 
 $action=isset($_POST['action'])?$_POST['action']:'';
@@ -96,7 +98,7 @@ function manage_user($link,$id)
 
 
 	$sql='select * from user';
-	$result=run_query($link,$GLOBALS['database'],$sql);
+	$result=run_query($link,$GLOBALS['user_database'],$sql);	//not database. It is user_database
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	echo '<input type=hidden name=id value=\''.$id.'\'>';
 
