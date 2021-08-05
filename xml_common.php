@@ -126,6 +126,7 @@ function edit_field($link,$node)
   $dom = dom_import_simplexml($node);
   $element_name=slash_to_caret($dom->getNodePath());
   $type=$node->attributes()->{'type'};
+  //echo $type;
   $readonly=$node->attributes()->{'readonly'};
   
 	if($type=='date')
@@ -161,13 +162,16 @@ function edit_field($link,$node)
       //$link,$sql,$field_name,$select_name,$select_id,$disabled='',$default='',$blank='no'
       mk_select_from_sql($link,$sql,$field_name,$element_name,$idd,$readonly,$node,$blank='yes');
     }
-  } 
 
-  else
-  {
-    echo '<input '.$readonly.' type=text class="w-100 form-control"  name=\''.$element_name.'\'  value=\''.$node.'\'>';
-  }
-   
+  } 
+	else if($type=='binary')
+	{
+		echo '<input style="width:100%;" type="file" id=\''.$idd.'\' name=\''.$element_name.'\'>';
+	}
+	else
+	{
+		echo '<input '.$readonly.' type=text class="w-100 form-control"  name=\''.$element_name.'\'  value=\''.$node.'\'>';
+	}
 }
 
 function mk_select_from_array($name, $select_array,$disabled='',$default='')

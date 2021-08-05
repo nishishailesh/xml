@@ -9,7 +9,9 @@
 	<recipient type="select" source="table" table="outward_to" field="name"></recipient>
 	<subject/>
 	<greeting>Sir/Madam</greeting>
-	<description type="textarea" html="tiny"></description>
+	<description type="textarea" html="tiny">&lt;p&gt;Please, do the needful&lt;/p&gt;&#13;
+&lt;p&gt;Thanking you&lt;/p&gt;&#13;
+&lt;p&gt;Yours Sincerely&lt;/p&gt;</description>
 	<signature>
 		<initials></initials>
 		<name></name>
@@ -18,5 +20,6 @@
 		<institute>Government Medical College, Surat</institute>
 	</signature>
 	<submitted_through>Proper channel</submitted_through>
+	<attchments type="binary"></attchments>
 	<forwarded_to type="textarea" html="tiny"></forwarded_to>
 </outward>

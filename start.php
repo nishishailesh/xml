@@ -41,6 +41,7 @@ else if($action=='get_edit_id')
 	echo '<button class="btn btn-sm btn-primary" name=action value=edit>Show</button>';
 	echo '</form>';
 }
+
 else if($action=='get_view_id')
 {
 	echo '<h4 class="text-danger">Search by database ID</h4>';
@@ -73,7 +74,7 @@ else if($action=='save')
 	else
 	{
 			echo 'failed to saved at'.strftime("%Y-%m-%d %H:%M:%S").'<br>';
-	};
+	}
 	edit($link,$_POST['id'],$user);
 }
 else if($action=='get_search')
