@@ -268,7 +268,7 @@ function is_permitted($link,$db,$table,$field,$id_fname,$id,$permission_type,$us
 //user_database is different from database
 function get_user_info($link,$user)
 {
-	$sql='select * from user where user=\''.$user.'\'';
+	$sql='select * from `'.$GLOBALS['user_table'].'` where `'.$GLOBALS['user_id'].'`=\''.$user.'\'';
 	$result=run_query($link,$GLOBALS['user_database'],$sql);
 	return get_single_row($result);
 }

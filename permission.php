@@ -6,7 +6,7 @@ require_once 'base/verify_login.php';
 require_once 'xml_common.php';
 ///////User code below/////////////////////
 $link=get_link($GLOBALS['main_user'],$GLOBALS['main_pass']);
-echo '<pre>';print_r($_POST);echo '</pre>';
+//echo '<pre>';print_r($_POST);echo '</pre>';
 //$GLOBALS['per_style']='';//blank/defined=display, undefined=hidden
 
 $action=isset($_POST['action'])?$_POST['action']:'';
@@ -97,7 +97,8 @@ function manage_user($link,$id)
 	if(!is_array($acl)){$acl=array();}
 
 
-	$sql='select * from user';
+	$sql='select * from `'.$GLOBALS['user_table'].'`'; 
+	//echo $sql;
 	$result=run_query($link,$GLOBALS['user_database'],$sql);	//not database. It is user_database
 	echo '<input type=hidden name=session_name value=\''.session_name().'\'>';
 	echo '<input type=hidden name=id value=\''.$id.'\'>';
@@ -111,10 +112,10 @@ function manage_user($link,$id)
 		$rcheck='';
 		$ucheck='';
 		$pcheck='';
-		if(array_key_exists($ar['user'],$acl))
+		if(array_key_exists($ar[$GLOBALS['user_id']],$acl))
 		{
-			if(strpos($acl[$ar['user']],'r')!==false){$rcheck=' checked ';}
-			if(strpos($acl[$ar['user']],'u')!==false){$ucheck='checked  ';}
+			if(strpos($acl[$ar[$GLOBALS['user_id']]],'r')!==false){$rcheck=' checked ';}
+			if(strpos($acl[$ar[$GLOBALS['user_id']]],'u')!==false){$ucheck='checked  ';}
 			
 			/*if(strpos($acl[$ar['user']],'x')!==false)
 			{
@@ -126,15 +127,15 @@ function manage_user($link,$id)
 				echo '<h1>--False--</h1>';
 			}*/
 			
-			if(strpos($acl[$ar['user']],'p')!==false){$pcheck='checked';}			
+			if(strpos($acl[$ar[$GLOBALS['user_id']]],'p')!==false){$pcheck='checked';}			
 			
 		}
 		echo '<tr>
-				<td><input  type=checkbox '.$rcheck.' name=\''.$ar['user'].'^r\' ></td>
-				<td><input  type=checkbox '.$ucheck.' name=\''.$ar['user'].'^u\' ></td>
-				<td><input type=checkbox '.$pcheck.' name=\''.$ar['user'].'^p\' ></td>
+				<td><input  type=checkbox '.$rcheck.' name=\''.$ar[$GLOBALS['user_id']].'^r\' ></td>
+				<td><input  type=checkbox '.$ucheck.' name=\''.$ar[$GLOBALS['user_id']].'^u\' ></td>
+				<td><input type=checkbox '.$pcheck.' name=\''.$ar[$GLOBALS['user_id']].'^p\' ></td>
 				
-				<td>'.$ar['name'].'('.$ar['user'].')</td>
+				<td>'.$ar['name'].'('.$ar[$GLOBALS['user_id']].')</td>
 				<td>'.$ar['group'].'</td>
 			</tr>';
 
